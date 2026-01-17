@@ -1,0 +1,284 @@
+# Starship Configuration - DevOps Theme
+# Modern, informative prompt for DevOps/SRE workflows
+# Requires: Nerd Font (e.g., JetBrainsMono Nerd Font)
+
+# ============================================================
+# GENERAL
+# ============================================================
+add_newline = true
+command_timeout = 1000
+
+# Prompt format - clean two-line layout
+format = """
+$os\
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$git_state\
+$fill\
+$kubernetes\
+$aws\
+$gcloud\
+$terraform\
+$docker_context\
+$python\
+$nodejs\
+$golang\
+$rust\
+$java\
+$cmd_duration\
+$line_break\
+$character"""
+
+# Right prompt (optional, comment out if not wanted)
+# right_format = """$time"""
+
+# ============================================================
+# CORE MODULES
+# ============================================================
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
+
+[os]
+disabled = false
+format = "[$symbol]($style) "
+style = "bold white"
+
+[os.symbols]
+Macos = ""
+Linux = "🐧"
+Windows = "󰍲"
+
+[username]
+show_always = false
+format = "[$user]($style)@"
+style_user = "bold cyan"
+style_root = "bold red"
+
+[hostname]
+ssh_only = true
+format = "[$hostname]($style) "
+style = "bold cyan"
+
+[directory]
+truncation_length = 4
+truncate_to_repo = true
+format = "[$path]($style)[$read_only]($read_only_style) "
+style = "bold blue"
+read_only = " 󰌾"
+read_only_style = "bold red"
+home_symbol = "~"
+
+[directory.substitutions]
+"Documents" = "󰈙"
+"Downloads" = ""
+"Projects" = ""
+
+[fill]
+symbol = " "
+
+# ============================================================
+# GIT
+# ============================================================
+
+[git_branch]
+symbol = " "
+format = "[$symbol$branch(:$remote_branch)]($style) "
+style = "bold purple"
+truncation_length = 30
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+style = "bold yellow"
+conflicted = "⚡"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?${count}"
+stashed = "󰏗"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+
+[git_state]
+format = '[\($state( $progress_current of $progress_total)\)]($style) '
+style = "bold yellow"
+rebase = "REBASING"
+merge = "MERGING"
+revert = "REVERTING"
+cherry_pick = "CHERRY-PICKING"
+bisect = "BISECTING"
+am = "AM"
+am_or_rebase = "AM/REBASE"
+
+# ============================================================
+# DEVOPS / CLOUD
+# ============================================================
+
+[kubernetes]
+disabled = false
+format = '[$symbol$context( \($namespace\))]($style) '
+symbol = "⎈ "
+style = "bold cyan"
+detect_folders = []
+detect_files = []
+
+[kubernetes.context_aliases]
+# Add your cluster aliases here, e.g.:
+# "arn:aws:eks:us-east-1:123456789:cluster/prod" = "prod-us1"
+# "gke_project_region_cluster" = "gke-prod"
+
+[aws]
+disabled = false
+format = '[$symbol($profile)(\($region\))]($style) '
+symbol = "☁️ "
+style = "bold #FF9900"
+
+[aws.region_aliases]
+us-east-1 = "use1"
+us-east-2 = "use2"
+us-west-1 = "usw1"
+us-west-2 = "usw2"
+eu-west-1 = "euw1"
+eu-west-2 = "euw2"
+eu-central-1 = "euc1"
+ap-southeast-1 = "apse1"
+ap-southeast-2 = "apse2"
+ap-northeast-1 = "apne1"
+
+[gcloud]
+disabled = false
+format = '[$symbol$account(@$project)(\($region\))]($style) '
+symbol = "󱇶 "
+style = "bold #4285F4"
+
+[gcloud.region_aliases]
+us-central1 = "usc1"
+us-east1 = "use1"
+us-west1 = "usw1"
+europe-west1 = "euw1"
+
+[terraform]
+disabled = false
+format = '[$symbol$workspace]($style) '
+symbol = "󱁢 "
+style = "bold #7B42BC"
+
+[docker_context]
+disabled = false
+format = '[$symbol$context]($style) '
+symbol = " "
+style = "bold #2496ED"
+only_with_files = true
+
+# ============================================================
+# LANGUAGES
+# ============================================================
+
+[python]
+disabled = false
+format = '[$symbol($version)(\($virtualenv\))]($style) '
+symbol = " "
+style = "bold #3776AB"
+detect_extensions = ["py"]
+detect_files = ["requirements.txt", "pyproject.toml", "Pipfile", ".python-version"]
+
+[nodejs]
+disabled = false
+format = '[$symbol($version)]($style) '
+symbol = " "
+style = "bold #339933"
+detect_extensions = ["js", "ts", "mjs", "cjs"]
+detect_files = ["package.json", ".nvmrc"]
+
+[golang]
+disabled = false
+format = '[$symbol($version)]($style) '
+symbol = " "
+style = "bold #00ADD8"
+
+[rust]
+disabled = false
+format = '[$symbol($version)]($style) '
+symbol = "󱘗 "
+style = "bold #DEA584"
+
+[java]
+disabled = false
+format = '[$symbol($version)]($style) '
+symbol = " "
+style = "bold #ED8B00"
+
+# ============================================================
+# STATUS & TIMING
+# ============================================================
+
+[cmd_duration]
+min_time = 2000
+format = "[󱎫 $duration]($style) "
+style = "bold yellow"
+show_milliseconds = false
+show_notifications = false
+
+[time]
+disabled = true
+format = '[$time]($style) '
+style = "bold white"
+time_format = "%H:%M"
+
+[status]
+disabled = false
+format = '[$symbol$status]($style) '
+symbol = "✘ "
+style = "bold red"
+
+[jobs]
+disabled = false
+format = "[$symbol$number]($style) "
+symbol = "✦ "
+style = "bold blue"
+threshold = 1
+
+# ============================================================
+# BATTERY (useful for laptops)
+# ============================================================
+
+[battery]
+disabled = true
+full_symbol = "󰁹 "
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂃 "
+unknown_symbol = "󰁽 "
+empty_symbol = "󰂎 "
+
+[[battery.display]]
+threshold = 20
+style = "bold red"
+
+[[battery.display]]
+threshold = 50
+style = "bold yellow"
+
+# ============================================================
+# MEMORY & SHLVL (optional, usually disabled)
+# ============================================================
+
+[memory_usage]
+disabled = true
+format = "[$symbol${ram}]($style) "
+symbol = "󰍛 "
+style = "bold dimmed white"
+threshold = 75
+
+[shlvl]
+disabled = true
+format = "[$symbol$shlvl]($style) "
+symbol = "↕ "
+style = "bold yellow"
+threshold = 2

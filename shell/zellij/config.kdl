@@ -1,0 +1,125 @@
+// Zellij Configuration
+// Modern terminal multiplexer for DevOps workflows
+
+// ============================================================
+// CORE BEHAVIOR
+// ============================================================
+
+default_shell "zsh"
+on_force_close "quit"
+pane_frames true
+auto_layout true
+default_layout "default"
+
+// Session behavior
+session_serialization true
+pane_viewport_serialization true
+
+// Use mouse
+mouse_mode true
+scroll_buffer_size 50000
+
+// Copy on select
+copy_on_select true
+copy_command "pbcopy"
+
+// ============================================================
+// UI APPEARANCE
+// ============================================================
+
+simplified_ui false
+styled_underlines true
+hide_session_name false
+
+// Theme (Catppuccin Mocha inspired)
+themes {
+    default {
+        fg "#cad3f5"
+        bg "#1e2030"
+        black "#181926"
+        red "#ed8796"
+        green "#a6da95"
+        yellow "#eed49f"
+        blue "#8aadf4"
+        magenta "#c6a0f6"
+        cyan "#8bd5ca"
+        white "#cad3f5"
+        orange "#f5a97f"
+    }
+}
+
+theme "default"
+
+// ============================================================
+// KEYBINDINGS
+// ============================================================
+
+keybinds {
+    // Keep defaults but customize a few
+
+    shared_except "locked" {
+        // Quick session actions
+        bind "Ctrl g" { SwitchToMode "locked"; }
+        bind "Ctrl q" { Quit; }
+
+        // Pane navigation (vim-style)
+        bind "Alt h" { MoveFocus "Left"; }
+        bind "Alt j" { MoveFocus "Down"; }
+        bind "Alt k" { MoveFocus "Up"; }
+        bind "Alt l" { MoveFocus "Right"; }
+
+        // Pane resize
+        bind "Alt H" { Resize "Left"; }
+        bind "Alt J" { Resize "Down"; }
+        bind "Alt K" { Resize "Up"; }
+        bind "Alt L" { Resize "Right"; }
+
+        // Quick split
+        bind "Alt -" { NewPane "Down"; }
+        bind "Alt \\" { NewPane "Right"; }
+
+        // Tab navigation
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
+
+        // New tab
+        bind "Alt t" { NewTab; }
+    }
+
+    shared_except "normal" "locked" {
+        bind "Enter" { SwitchToMode "normal"; }
+        bind "Esc" { SwitchToMode "normal"; }
+    }
+}
+
+// ============================================================
+// PLUGINS (using defaults)
+// ============================================================
+
+plugins {
+    tab-bar location="zellij:tab-bar"
+    status-bar location="zellij:status-bar"
+    strider location="zellij:strider"
+    compact-bar location="zellij:compact-bar"
+    session-manager location="zellij:session-manager"
+    welcome-screen location="zellij:session-manager" {
+        welcome_screen true
+    }
+    filepicker location="zellij:strider" {
+        cwd "/"
+    }
+}
+
+// ============================================================
+// LAYOUTS
+// ============================================================
+
+// Default layout is built-in, but you can create custom ones
+// Place .kdl files in ~/.config/zellij/layouts/
