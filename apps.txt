@@ -21,7 +21,7 @@ pyenv                         # Python version manager
 curl                          # HTTP client
 wget                          # File downloader
 jq                            # JSON processor
-tldr                          # Simplified man pages
+tlrc                          # Simplified man pages (tldr client)
 awscli                        # AWS CLI v2
 --tap anomalyco/tap           # OpenCode tap
 anomalyco/tap/opencode        # AI terminal coding assistant
