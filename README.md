@@ -1,135 +1,236 @@
-# Shell Bootstrap
+# 🚀 Shell Bootstrap
 
-Opinionated DevOps shell setup for **macOS + zsh + Warp**.
+<div align="center">
+
+[![macOS](https://img.shields.io/badge/macOS-Sequoia%20%7C%20Sonoma-0078D4?style=for-the-badge&logo=apple&logoColor=white)](https://www.apple.com/macos/)
+[![Zsh](https://img.shields.io/badge/Shell-Zsh-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)](https://www.zsh.org/)
+[![Homebrew](https://img.shields.io/badge/Homebrew-FBB040?style=for-the-badge&logo=homebrew&logoColor=black)](https://brew.sh/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+**Production-ready macOS shell configuration for DevOps engineers, SREs, and developers.**
+
+*One-command setup • 200+ aliases • Starship prompt • Kubernetes tools • Fuzzy completion*
+
+[📦 Quick Start](#-quick-start) •
+[✨ Features](#-features) •
+[📚 Docs](#-documentation) •
+[⚙️ Configure](#️-configuration)
+
+</div>
+
+---
 
 ## ✨ Features
 
-- **Modern prompt** with Starship (DevOps-focused theme)
-- **200+ productivity aliases** for Git, Kubernetes, Docker, Terraform, AWS
-- **Smart plugins** with fzf-tab, autosuggestions, syntax highlighting
-- **Configurable** — choose what to install via `config.sh`
+| Feature | Description |
+|---------|-------------|
+| 🎨 **Starship Prompt** | Beautiful prompt with Git, K8s, AWS, Docker status |
+| ⚡ **200+ Aliases** | Shortcuts for Git, kubectl, Terraform, Docker |
+| 🔌 **Smart Plugins** | fzf-tab, autosuggestions, syntax highlighting |
+| 📦 **50+ DevOps Tools** | k9s, stern, helm, argocd, trivy, and more |
+| 🛠️ **Configurable** | Toggle any package on/off via `config.sh` |
+| 🔄 **Idempotent** | Safe to re-run, auto-creates backups |
+| 📱 **Apple Silicon** | Native M1/M2/M3/M4 support |
 
-## Quick Install
+---
+
+## � Quick Start
 
 ```bash
-git clone https://github.com/<your-username>/shell-bootstrap.git
+# Clone
+git clone https://github.com/yourusername/shell-bootstrap.git
 cd shell-bootstrap
+
+# (Optional) Customize
+vim config.sh
+vim apps.txt
+
+# Install
 ./bootstrap.sh
-```
-
-### Customize Installation
-
-Edit `config.sh` before running:
-
-```bash
-# config.sh - set to true/false
-INSTALL_ANTIDOTE=true
-INSTALL_STARSHIP=true
-INSTALL_K9S=false        # Skip if not using Kubernetes
-INSTALL_NERD_FONT=true   # Auto-install font
 ```
 
 ### Install Options
 
-```bash
-./bootstrap.sh          # Interactive
-./bootstrap.sh --yes    # Non-interactive (CI)
-./bootstrap.sh --help   # Show help
-```
+| Command | Description |
+|---------|-------------|
+| `./bootstrap.sh` | Interactive mode |
+| `./bootstrap.sh --yes` | Non-interactive (CI/CD) |
+| `./bootstrap.sh --help` | Show help |
 
-## Uninstall
+---
 
-```bash
-./uninstall.sh
-```
+## 🧰 What's Included
 
-## Packages
+### 🐚 Shell Core
+| Tool | Description |
+|------|-------------|
+| [Antidote](https://antidote.sh/) | ⚡ Fast Zsh plugin manager |
+| [Starship](https://starship.rs/) | 🚀 Cross-shell prompt |
+| [Zellij](https://zellij.dev/) | 📺 Terminal multiplexer |
+| [Oh My Zsh](https://ohmyz.sh/) | 🔌 Plugin framework |
 
-### Shell Core
-| Package | Config Variable |
-|---------|-----------------|
-| antidote | `INSTALL_ANTIDOTE` |
-| starship | `INSTALL_STARSHIP` |
-| zellij | `INSTALL_ZELLIJ` |
+### 🛠️ CLI Tools
+| Tool | Description |
+|------|-------------|
+| `eza` | 📁 Modern `ls` with icons |
+| `bat` | 🦇 `cat` with syntax highlighting |
+| `fzf` | 🔍 Fuzzy finder |
+| `ripgrep` | ⚡ Fast grep |
+| `fd` | 🔎 Fast find |
+| `zoxide` | 📂 Smarter `cd` |
+| `btop` | 📊 Beautiful system monitor |
 
-### CLI Tools
-| Package | Config Variable |
-|---------|-----------------|
-| bat | `INSTALL_BAT` |
-| eza | `INSTALL_EZA` |
-| fzf | `INSTALL_FZF` |
-| fd | `INSTALL_FD` |
-| ripgrep | `INSTALL_RIPGREP` |
-| jq/yq | `INSTALL_JQ` / `INSTALL_YQ` |
-| zoxide | `INSTALL_ZOXIDE` |
+### ☸️ DevOps Tools
+| Tool | Description |
+|------|-------------|
+| `kubectl` | ☸️ Kubernetes CLI |
+| `k9s` | 🐶 Kubernetes TUI |
+| `helm` | ⎈ K8s package manager |
+| `stern` | 📜 Multi-pod log tailing |
+| `terraform` | 🏗️ Infrastructure as Code |
+| `argocd` | 🔄 GitOps CLI |
+| `trivy` | 🔒 Security scanner |
 
-### DevOps
-| Package | Config Variable |
-|---------|-----------------|
-| kubectx | `INSTALL_KUBECTX` |
-| stern | `INSTALL_STERN` |
-| k9s | `INSTALL_K9S` |
-| et | `INSTALL_ET` |
+### 🖥️ Desktop Apps (via `apps.txt`)
+| App | Description |
+|-----|-------------|
+| Warp | 🤖 AI-powered terminal |
+| OrbStack | 🐳 Docker alternative |
+| Lens | 👁️ Kubernetes IDE |
+| VS Code | 📝 Code editor |
 
-## Key Aliases
+---
 
-```bash
-# Git
-gs/gp/gl     # status/push/log
-gco/gcb      # checkout/new branch
+## ⚙️ Configuration
 
-# Kubernetes  
-k/kx/kn      # kubectl/kubectx/kubens
-kgp/kl/kex   # get pods/logs/exec
-
-# Docker
-dps/dex/dl   # ps/exec/logs
-dc/dcu/dcd   # compose up/down
-
-# Terraform
-tf/tfi/tfp   # terraform/init/plan
-tfa/tfaa     # apply/auto-approve
-```
-
-## Key Functions
+Edit `config.sh` before installing:
 
 ```bash
-ksh [pod]       # Shell into pod (fzf if no arg)
-ksecret [name]  # Decode k8s secret
-dsh [container] # Shell into container
-aws-switch      # Switch AWS profile
-mkcd <dir>      # mkdir + cd
-killport <port> # Kill process on port
+# Core packages
+INSTALL_ANTIDOTE=true     # 🔌 Plugin manager
+INSTALL_STARSHIP=true     # 🚀 Prompt
+INSTALL_K9S=true          # 🐶 K8s TUI
+
+# Optional
+INSTALL_NERD_FONT=true    # 🔤 Required for icons
+INSTALL_APPS=true         # 📦 Install from apps.txt
 ```
 
-## Files
+---
 
+## ⌨️ Key Aliases
+
+### 🔀 Git
+```bash
+gs              # git status
+gp              # git push
+gl              # git log --oneline
+gco-fzf         # checkout with fuzzy search
+gac "msg"       # add all + commit
 ```
-./config.sh        # ← Edit this to customize
-./bootstrap.sh     # Installer
-./uninstall.sh     # Uninstaller
-./shell/           # Config files
+
+### ☸️ Kubernetes
+```bash
+k               # kubectl
+kx / kn         # switch context / namespace
+kgp             # kubectl get pods
+kl              # kubectl logs
+ksh             # shell into pod (fzf)
 ```
 
-## Requirements
+### 🐳 Docker
+```bash
+dps             # docker ps
+dsh             # shell into container
+dc              # docker-compose
+```
 
-**Nerd Font** for icons (auto-install available):
+### 🏗️ Terraform
+```bash
+tf              # terraform
+tfi / tfp       # init / plan
+tfa             # apply
+```
+
+---
+
+## 📚 Documentation
+
+| Guide | Topics |
+|-------|--------|
+| [🛠️ CLI Tools](docs/cli-tools.md) | eza, fzf, ripgrep, bat, btop |
+| [☸️ DevOps Tools](docs/devops-tools.md) | kubectl, helm, terraform |
+| [🔌 ZSH Plugins](docs/zsh-plugins.md) | Plugins explained |
+| [🔀 Git Workflow](docs/git-workflow.md) | Aliases, lazygit, gh |
+| [🍎 macOS Apps](docs/macos-apps.md) | Warp, OrbStack, Lens |
+| [⚡ Productivity](docs/productivity-tips.md) | Workflows & shortcuts |
+
+---
+
+## 🗑️ Uninstall
 
 ```bash
-# In config.sh:
-INSTALL_NERD_FONT=true
+./uninstall.sh              # Interactive menu
+./uninstall.sh --config     # Use uninstall_config.sh
 ```
 
-Or manually:
-```bash
-brew tap homebrew/cask-fonts
-brew install --cask font-jetbrains-mono-nerd-font
+---
+
+## 📁 Project Structure
+
+```
+shell-bootstrap/
+├── 📄 bootstrap.sh          # Main installer
+├── 📄 uninstall.sh          # Uninstaller
+├── ⚙️ config.sh             # Installation config
+├── 📋 apps.txt              # Desktop apps list
+├── 📚 docs/                 # Documentation
+└── 🐚 shell/
+    ├── zsh/
+    │   ├── aliases.zsh      # 200+ aliases
+    │   ├── functions.zsh    # Utility functions
+    │   ├── exports.zsh      # Environment vars
+    │   ├── tools.zsh        # Tool init
+    │   └── plugins.list     # Antidote plugins
+    ├── starship/
+    │   └── starship.toml    # Prompt config
+    └── zellij/
+        └── config.kdl       # Multiplexer config
 ```
 
-## Compatibility
+---
 
-✅ Apple Silicon (M1/M2/M3) • ✅ Intel Mac
+## 💻 Compatibility
 
-## License
+| Platform | Status |
+|----------|--------|
+| macOS Sequoia (15.x) | ✅ Fully supported |
+| macOS Sonoma (14.x) | ✅ Fully supported |
+| Apple Silicon (M1/M2/M3/M4) | ✅ Native |
+| Intel Mac | ✅ Compatible |
 
-MIT
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Please open an issue or PR.
+
+---
+
+## 📄 License
+
+MIT © 2026
+
+---
+
+<div align="center">
+
+**⭐ Star this repo if it helped you!**
+
+Made with ❤️ for the DevOps community
+
+---
+
+**Keywords:** macOS terminal setup, zsh configuration, DevOps shell, Starship prompt, Kubernetes tools, kubectl aliases, terraform shortcuts, docker aliases, productivity shell, developer terminal, Apple Silicon terminal, M1 Mac terminal setup, dotfiles, shell bootstrap
+
+</div>

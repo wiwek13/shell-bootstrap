@@ -1,6 +1,13 @@
-# Productivity Tips
+# Productivity Tips ⚡
 
-Workflows, shortcuts, and habits to maximize efficiency.
+[![Productivity](https://img.shields.io/badge/Boost-10x%20Productivity-green)](https://github.com/)
+[![Shell](https://img.shields.io/badge/Shell-Zsh-blue?logo=gnu-bash)](https://www.zsh.org/)
+
+> **Workflows, keyboard shortcuts, and habits to maximize developer efficiency.**
+
+Learn the shortcuts, workflows, and automation techniques used by 10x developers.
+
+**Topics:** keyboard shortcuts, daily workflows, fuzzy search, shell history, clipboard management, system monitoring
 
 ---
 

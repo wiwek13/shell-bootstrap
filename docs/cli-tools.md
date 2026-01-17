@@ -1,6 +1,13 @@
-# CLI Tools Guide
+# CLI Tools Guide 🛠️
 
-Essential command-line utilities for productivity.
+[![Homebrew](https://img.shields.io/badge/Homebrew-Available-orange?logo=homebrew)](https://brew.sh/)
+[![macOS](https://img.shields.io/badge/macOS-Compatible-blue?logo=apple)](https://www.apple.com/macos/)
+
+> **Essential command-line utilities for developer productivity on macOS.**
+
+Master these modern CLI tools to 10x your terminal efficiency: file navigation, code search, system monitoring, and more.
+
+**Tools covered:** eza, fd, ripgrep, fzf, zoxide, bat, btop, ncdu, dust, duf, procs, jq, httpie, direnv, atuin, nvm, pyenv
 
 ---
 

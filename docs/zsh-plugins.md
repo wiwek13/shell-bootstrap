@@ -1,6 +1,14 @@
-# ZSH Plugins Guide
+# ZSH Plugins Guide 🔌
 
-Boost your shell productivity with these plugins.
+[![Zsh](https://img.shields.io/badge/Shell-Zsh-green?logo=gnu-bash)](https://www.zsh.org/)
+[![Antidote](https://img.shields.io/badge/Plugin%20Manager-Antidote-blue)](https://antidote.sh/)
+[![Oh My Zsh](https://img.shields.io/badge/Framework-Oh%20My%20Zsh-red)](https://ohmyz.sh/)
+
+> **Complete guide to Zsh plugins for shell productivity and DevOps workflows.**
+
+Boost your terminal productivity with autosuggestions, syntax highlighting, fuzzy completion, and 50+ plugins.
+
+**Plugins covered:** zsh-autosuggestions, fast-syntax-highlighting, fzf-tab, zsh-completions, alias-tips, kubectl, docker, terraform, aws, git
 
 ---
 

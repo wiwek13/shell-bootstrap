@@ -1,6 +1,13 @@
-# Git Workflow Guide
+# Git Workflow Guide 🔀
 
-Master Git with aliases, tools, and workflows.
+[![Git](https://img.shields.io/badge/Git-Version%20Control-orange?logo=git)](https://git-scm.com/)
+[![GitHub](https://img.shields.io/badge/GitHub-CLI-black?logo=github)](https://cli.github.com/)
+
+> **Master Git with 50+ aliases, lazygit, GitHub CLI, and proven workflows.**
+
+Speed up your Git workflow with shortcuts, fuzzy branch switching, and automation.
+
+**Tools covered:** git aliases, lazygit, git-delta, gh CLI, pre-commit, gco-fzf, gac, gnb
 
 ---
 

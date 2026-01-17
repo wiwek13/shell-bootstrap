@@ -1,6 +1,13 @@
-# macOS Apps Guide
+# macOS Apps Guide 🍎
 
-Desktop applications for productivity and development.
+[![macOS](https://img.shields.io/badge/macOS-Sonoma%20%7C%20Sequoia-blue?logo=apple)](https://www.apple.com/macos/)
+[![Homebrew Cask](https://img.shields.io/badge/Homebrew-Cask-orange?logo=homebrew)](https://brew.sh/)
+
+> **Best macOS applications for developers, DevOps engineers, and productivity enthusiasts.**
+
+Curated list of essential desktop apps with keybindings, features, and pro tips.
+
+**Apps covered:** Warp, OrbStack, VS Code, Lens, DBeaver, Raycast, Rectangle, Bitwarden, VLC, Slack
 
 ---
 

@@ -1,6 +1,14 @@
-# DevOps Tools Guide
+# DevOps Tools Guide ☸️
 
-Kubernetes, Terraform, Docker, and cloud tools.
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-blue?logo=kubernetes)](https://kubernetes.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-IaC-purple?logo=terraform)](https://www.terraform.io/)
+[![Docker](https://img.shields.io/badge/Docker-Containers-blue?logo=docker)](https://www.docker.com/)
+
+> **Complete guide to Kubernetes, Terraform, Docker, and cloud CLI tools for DevOps engineers.**
+
+Master kubectl, helm, k9s, terraform, and more with practical examples and workflows.
+
+**Tools covered:** kubectl, kubectx, k9s, stern, helm, kustomize, argocd, docker, dive, trivy, terraform, tfswitch, awscli, grpcurl
 
 ---
 
