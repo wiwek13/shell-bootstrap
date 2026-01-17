@@ -341,6 +341,80 @@ EOF
 echo "  ✔ ~/.zshrc"
 
 # ============================================================
+# INSTALL APPLICATIONS FROM apps.txt
+# ============================================================
+APPS_FILE="$SCRIPT_DIR/apps.txt"
+if [[ "${INSTALL_APPS:-true}" == true ]] && [[ -f "$APPS_FILE" ]]; then
+  echo ""
+  echo "▶ Installing applications from apps.txt..."
+  
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    # Skip empty lines and comments
+    [[ -z "$line" ]] && continue
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    
+    # Extract package name (remove inline comments)
+    pkg=$(echo "$line" | sed 's/#.*//' | xargs)
+    [[ -z "$pkg" ]] && continue
+    
+    # Check if it's a tap
+    if [[ "$pkg" == --tap* ]]; then
+      tap_name=$(echo "$pkg" | sed 's/--tap //')
+      if ! brew tap | grep -q "^$tap_name$"; then
+        echo "  Tapping $tap_name..."
+        brew tap "$tap_name" || echo "    ⚠️ Failed to tap $tap_name"
+      else
+        echo "  ⏭ Skipping $tap_name (already tapped)"
+      fi
+    # Check if it's a cask
+    elif [[ "$pkg" == --cask* ]]; then
+      cask_name=$(echo "$pkg" | sed 's/--cask //')
+      if ! brew list --cask "$cask_name" >/dev/null 2>&1; then
+        echo "  Installing (cask) $cask_name..."
+        brew install --cask "$cask_name" || echo "    ⚠️ Failed to install $cask_name"
+      else
+        echo "  ⏭ Skipping $cask_name (already installed)"
+      fi
+    else
+      # Regular formula (supports tap/formula format like hashicorp/tap/terraform)
+      formula_name=$(echo "$pkg" | awk -F'/' '{print $NF}')
+      if ! brew list "$formula_name" >/dev/null 2>&1; then
+        echo "  Installing $pkg..."
+        brew install "$pkg" || echo "    ⚠️ Failed to install $pkg"
+      else
+        echo "  ⏭ Skipping $pkg (already installed)"
+      fi
+    fi
+  done < "$APPS_FILE"
+else
+  echo ""
+  echo "⏭ No apps.txt found, skipping application installation"
+fi
+
+# ============================================================
+# POST-INSTALL MAINTENANCE
+# ============================================================
+echo ""
+echo "▶ Running post-install maintenance..."
+
+echo "  Updating Homebrew..."
+brew update
+
+echo "  Upgrading packages..."
+brew upgrade
+
+echo "  Running cleanup..."
+brew cleanup -s
+
+echo "  Running diagnostics..."
+brew doctor || true
+
+echo "  Final cleanup..."
+brew cleanup
+
+echo "  ✔ Maintenance complete"
+
+# ============================================================
 # DONE
 # ============================================================
 echo ""
@@ -374,3 +448,4 @@ echo "Next steps:"
 echo "  1. Restart your terminal or run: exec zsh"
 echo "  2. (Optional) Start Zellij: zellij"
 echo ""
+

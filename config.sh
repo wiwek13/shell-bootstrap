@@ -56,3 +56,9 @@ INSTALL_ZELLIJ_CONFIG=true  # Zellij terminal config
 # Set to true to auto-install JetBrainsMono Nerd Font
 # Required for icons in prompt and eza
 INSTALL_NERD_FONT=false
+
+# ============================================================
+# APPLICATIONS (apps.txt)
+# ============================================================
+# Set to true to install applications from apps.txt
+INSTALL_APPS=true
