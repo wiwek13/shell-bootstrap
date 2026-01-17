@@ -1,7 +1,7 @@
 # CLI Tools Guide 🛠️
 
 [![Homebrew](https://img.shields.io/badge/Homebrew-Available-orange?logo=homebrew)](https://brew.sh/)
-[![macOS](https://img.shields.io/badge/macOS-Compatible-blue?logo=apple)](https://www.apple.com/macos/)
+
 
 > **Essential command-line utilities for developer productivity on macOS.**
 

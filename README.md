@@ -2,10 +2,8 @@
 
 <div align="center">
 
-[![macOS](https://img.shields.io/badge/macOS-Sequoia%20%7C%20Sonoma-0078D4?style=for-the-badge&logo=apple&logoColor=white)](https://www.apple.com/macos/)
 [![Zsh](https://img.shields.io/badge/Shell-Zsh-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)](https://www.zsh.org/)
 [![Homebrew](https://img.shields.io/badge/Homebrew-FBB040?style=for-the-badge&logo=homebrew&logoColor=black)](https://brew.sh/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 **Production-ready macOS shell configuration for DevOps engineers, SREs, and developers.**
 
@@ -30,7 +28,7 @@
 | 📦 **50+ DevOps Tools** | k9s, stern, helm, argocd, trivy, and more |
 | 🛠️ **Configurable** | Toggle any package on/off via `config.sh` |
 | 🔄 **Idempotent** | Safe to re-run, auto-creates backups |
-| 📱 **Apple Silicon** | Native M1/M2/M3/M4 support |
+
 
 ---
 
@@ -204,8 +202,6 @@ shell-bootstrap/
 
 | Platform | Status |
 |----------|--------|
-| macOS Sequoia (15.x) | ✅ Fully supported |
-| macOS Sonoma (14.x) | ✅ Fully supported |
 | Apple Silicon (M1/M2/M3/M4) | ✅ Native |
 | Intel Mac | ✅ Compatible |
 
@@ -217,19 +213,7 @@ Contributions welcome! Please open an issue or PR.
 
 ---
 
-## 📄 License
-
-MIT © 2026
-
----
-
 <div align="center">
-
-**⭐ Star this repo if it helped you!**
-
-Made with ❤️ for the DevOps community
-
----
 
 **Keywords:** macOS terminal setup, zsh configuration, DevOps shell, Starship prompt, Kubernetes tools, kubectl aliases, terraform shortcuts, docker aliases, productivity shell, developer terminal, Apple Silicon terminal, M1 Mac terminal setup, dotfiles, shell bootstrap
 

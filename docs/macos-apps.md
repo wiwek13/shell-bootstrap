@@ -1,6 +1,5 @@
 # macOS Apps Guide 🍎
 
-[![macOS](https://img.shields.io/badge/macOS-Sonoma%20%7C%20Sequoia-blue?logo=apple)](https://www.apple.com/macos/)
 [![Homebrew Cask](https://img.shields.io/badge/Homebrew-Cask-orange?logo=homebrew)](https://brew.sh/)
 
 > **Best macOS applications for developers, DevOps engineers, and productivity enthusiasts.**
