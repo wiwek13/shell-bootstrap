@@ -3,6 +3,60 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_DIR="$HOME/.shell-backup-$(date +%Y%m%d-%H%M%S)"
+FORCE_YES=false
+
+# ============================================================
+# LOAD CONFIGURATION
+# ============================================================
+CONFIG_FILE="$SCRIPT_DIR/config.sh"
+if [[ -f "$CONFIG_FILE" ]]; then
+  source "$CONFIG_FILE"
+else
+  echo "⚠️  No config.sh found, using defaults (install everything)"
+  # Default: install everything
+  INSTALL_ANTIDOTE=true
+  INSTALL_STARSHIP=true
+  INSTALL_ZELLIJ=true
+  INSTALL_OH_MY_ZSH=true
+  INSTALL_BAT=true
+  INSTALL_EZA=true
+  INSTALL_FZF=true
+  INSTALL_FD=true
+  INSTALL_RIPGREP=true
+  INSTALL_JQ=true
+  INSTALL_YQ=true
+  INSTALL_AG=true
+  INSTALL_ZOXIDE=true
+  INSTALL_TREE=true
+  INSTALL_WATCH=true
+  INSTALL_HTOP=true
+  INSTALL_KUBECTX=true
+  INSTALL_STERN=true
+  INSTALL_K9S=true
+  INSTALL_ET=true
+  INSTALL_ZSH_CONFIG=true
+  INSTALL_STARSHIP_CONFIG=true
+  INSTALL_ZELLIJ_CONFIG=true
+  INSTALL_NERD_FONT=false
+fi
+
+# Parse arguments
+for arg in "$@"; do
+  case $arg in
+    --yes|-y) FORCE_YES=true ;;
+    --help|-h)
+      echo "Usage: ./bootstrap.sh [OPTIONS]"
+      echo ""
+      echo "Options:"
+      echo "  --yes, -y    Skip confirmation prompts (for CI/automation)"
+      echo "  --help, -h   Show this help message"
+      echo ""
+      echo "Configuration:"
+      echo "  Edit config.sh to choose what to install"
+      exit 0
+      ;;
+  esac
+done
 
 echo "▶ Shell bootstrap starting (macOS only)"
 echo ""
@@ -30,10 +84,10 @@ backup_if_exists() {
 echo "▶ Checking for existing configurations..."
 
 EXISTING_FILES=()
-[[ -f "$HOME/.zshrc" ]] && EXISTING_FILES+=("~/.zshrc")
-[[ -f "$HOME/.zprofile" ]] && EXISTING_FILES+=("~/.zprofile")
-[[ -d "$HOME/.shell" ]] && EXISTING_FILES+=("~/.shell/")
-[[ -f "$HOME/.zsh_plugins.txt" ]] && EXISTING_FILES+=("~/.zsh_plugins.txt")
+[[ -f "$HOME/.zshrc" ]] && EXISTING_FILES+=("$HOME/.zshrc")
+[[ -f "$HOME/.zprofile" ]] && EXISTING_FILES+=("$HOME/.zprofile")
+[[ -d "$HOME/.shell" ]] && EXISTING_FILES+=("$HOME/.shell/")
+[[ -f "$HOME/.zsh_plugins.txt" ]] && EXISTING_FILES+=("$HOME/.zsh_plugins.txt")
 
 if [[ ${#EXISTING_FILES[@]} -gt 0 ]]; then
   echo ""
@@ -43,12 +97,18 @@ if [[ ${#EXISTING_FILES[@]} -gt 0 ]]; then
   done
   echo ""
   echo "  Backups will be saved to: $BACKUP_DIR"
-  echo ""
-  read -p "  Continue? (y/N) " -n 1 -r
-  echo ""
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "❌ Aborted by user"
-    exit 1
+  
+  if [[ "$FORCE_YES" != true ]]; then
+    echo ""
+    read -p "  Continue? (y/N) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      echo "❌ Aborted by user"
+      exit 1
+    fi
+  else
+    echo ""
+    echo "  --yes flag provided, continuing..."
   fi
 
   # Create backups
@@ -74,80 +134,119 @@ else
   echo "  ✔ Homebrew already installed"
 fi
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Detect Homebrew path (Apple Silicon vs Intel)
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+else
+  echo "❌ Homebrew not found after installation"
+  exit 1
+fi
 
 # ============================================================
-# PACKAGE INSTALLATION
+# HELPER FUNCTION FOR PACKAGE INSTALLATION
 # ============================================================
-echo ""
-echo "▶ Installing packages..."
-
-PACKAGES=(
-  # Shell
-  antidote
-  starship
-  zellij
-  
-  # CLI Tools
-  bat
-  eza               # Modern ls replacement (maintained fork of exa)
-  the_silver_searcher
-  fzf
-  jq
-  yq
-  fd
-  ripgrep
-  tree
-  watch
-  htop
-  
-  # DevOps CLI
-  kubectx       # Kubernetes context/namespace switching
-  stern         # Multi-pod log tailing
-  k9s           # Kubernetes TUI
-  zoxide        # Smarter cd (directory jumping)
-)
-
-for pkg in "${PACKAGES[@]}"; do
+install_pkg() {
+  local pkg="$1"
   if ! brew list "$pkg" >/dev/null 2>&1; then
     echo "  Installing $pkg..."
     brew install "$pkg"
   else
     echo "  ✔ $pkg"
   fi
-done
+}
+
+skip_pkg() {
+  local pkg="$1"
+  echo "  ⏭ Skipping $pkg (disabled in config)"
+}
+
+# ============================================================
+# PACKAGE INSTALLATION (respects config.sh)
+# ============================================================
+echo ""
+echo "▶ Installing packages..."
+
+# Shell core
+[[ "$INSTALL_ANTIDOTE" == true ]] && install_pkg "antidote" || skip_pkg "antidote"
+[[ "$INSTALL_STARSHIP" == true ]] && install_pkg "starship" || skip_pkg "starship"
+[[ "$INSTALL_ZELLIJ" == true ]] && install_pkg "zellij" || skip_pkg "zellij"
+
+# CLI essentials
+[[ "$INSTALL_BAT" == true ]] && install_pkg "bat" || skip_pkg "bat"
+[[ "$INSTALL_EZA" == true ]] && install_pkg "eza" || skip_pkg "eza"
+[[ "$INSTALL_FZF" == true ]] && install_pkg "fzf" || skip_pkg "fzf"
+[[ "$INSTALL_FD" == true ]] && install_pkg "fd" || skip_pkg "fd"
+[[ "$INSTALL_RIPGREP" == true ]] && install_pkg "ripgrep" || skip_pkg "ripgrep"
+[[ "$INSTALL_JQ" == true ]] && install_pkg "jq" || skip_pkg "jq"
+[[ "$INSTALL_YQ" == true ]] && install_pkg "yq" || skip_pkg "yq"
+[[ "$INSTALL_AG" == true ]] && install_pkg "the_silver_searcher" || skip_pkg "the_silver_searcher"
+[[ "$INSTALL_ZOXIDE" == true ]] && install_pkg "zoxide" || skip_pkg "zoxide"
+
+# System utilities
+[[ "$INSTALL_TREE" == true ]] && install_pkg "tree" || skip_pkg "tree"
+[[ "$INSTALL_WATCH" == true ]] && install_pkg "watch" || skip_pkg "watch"
+[[ "$INSTALL_HTOP" == true ]] && install_pkg "htop" || skip_pkg "htop"
+
+# DevOps tools
+[[ "$INSTALL_KUBECTX" == true ]] && install_pkg "kubectx" || skip_pkg "kubectx"
+[[ "$INSTALL_STERN" == true ]] && install_pkg "stern" || skip_pkg "stern"
+[[ "$INSTALL_K9S" == true ]] && install_pkg "k9s" || skip_pkg "k9s"
 
 # Eternal Terminal (requires tap)
-echo ""
-echo "▶ Installing Eternal Terminal..."
-if ! brew list et >/dev/null 2>&1; then
-  brew tap MisterTea/et 2>/dev/null || true
-  brew install MisterTea/et/et
+if [[ "$INSTALL_ET" == true ]]; then
+  echo ""
+  echo "▶ Installing Eternal Terminal..."
+  if ! brew list et >/dev/null 2>&1; then
+    brew tap MisterTea/et 2>/dev/null || true
+    brew install MisterTea/et/et
+  else
+    echo "  ✔ et"
+  fi
 else
-  echo "  ✔ et"
+  skip_pkg "et"
 fi
 
 # ============================================================
 # OH MY ZSH INSTALLATION
 # ============================================================
-echo ""
-echo "▶ Checking Oh My Zsh..."
+if [[ "$INSTALL_OH_MY_ZSH" == true ]]; then
+  echo ""
+  echo "▶ Checking Oh My Zsh..."
 
-if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-  echo "  Installing Oh My Zsh..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-else
-  echo "  ✔ Oh My Zsh already installed"
+  if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+    echo "  Installing Oh My Zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  else
+    echo "  ✔ Oh My Zsh already installed"
+  fi
 fi
 
 # ============================================================
 # FZF KEY BINDINGS
 # ============================================================
-echo ""
-echo "▶ Setting up fzf..."
-if [[ -f "$(brew --prefix)/opt/fzf/install" ]]; then
-  "$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc --no-bash --no-fish
-  echo "  ✔ fzf key bindings installed"
+if [[ "$INSTALL_FZF" == true ]]; then
+  echo ""
+  echo "▶ Setting up fzf..."
+  if [[ -f "$(brew --prefix)/opt/fzf/install" ]]; then
+    "$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc --no-bash --no-fish
+    echo "  ✔ fzf key bindings installed"
+  fi
+fi
+
+# ============================================================
+# NERD FONT (optional)
+# ============================================================
+if [[ "$INSTALL_NERD_FONT" == true ]]; then
+  echo ""
+  echo "▶ Installing Nerd Font..."
+  brew tap homebrew/cask-fonts 2>/dev/null || true
+  if ! brew list --cask font-jetbrains-mono-nerd-font >/dev/null 2>&1; then
+    brew install --cask font-jetbrains-mono-nerd-font
+  else
+    echo "  ✔ JetBrainsMono Nerd Font already installed"
+  fi
 fi
 
 # ============================================================
@@ -160,23 +259,26 @@ mkdir -p ~/.shell/{zsh,starship,zellij}
 mkdir -p ~/.config/starship
 
 # ============================================================
-# COPY CONFIGURATION FILES
+# COPY CONFIGURATION FILES (respects config.sh)
 # ============================================================
 echo ""
 echo "▶ Copying configuration files..."
 
-# Copy zsh configs
-cp -v "$SCRIPT_DIR/shell/zsh/exports.zsh" ~/.shell/zsh/
-cp -v "$SCRIPT_DIR/shell/zsh/aliases.zsh" ~/.shell/zsh/
-cp -v "$SCRIPT_DIR/shell/zsh/functions.zsh" ~/.shell/zsh/
-cp -v "$SCRIPT_DIR/shell/zsh/tools.zsh" ~/.shell/zsh/
-cp -v "$SCRIPT_DIR/shell/zsh/plugins.list" ~/.shell/zsh/
+if [[ "$INSTALL_ZSH_CONFIG" == true ]]; then
+  cp -v "$SCRIPT_DIR/shell/zsh/exports.zsh" ~/.shell/zsh/
+  cp -v "$SCRIPT_DIR/shell/zsh/aliases.zsh" ~/.shell/zsh/
+  cp -v "$SCRIPT_DIR/shell/zsh/functions.zsh" ~/.shell/zsh/
+  cp -v "$SCRIPT_DIR/shell/zsh/tools.zsh" ~/.shell/zsh/
+  cp -v "$SCRIPT_DIR/shell/zsh/plugins.list" ~/.shell/zsh/
+fi
 
-# Copy starship config
-cp -v "$SCRIPT_DIR/shell/starship/starship.toml" ~/.shell/starship/
+if [[ "$INSTALL_STARSHIP_CONFIG" == true ]]; then
+  cp -v "$SCRIPT_DIR/shell/starship/starship.toml" ~/.shell/starship/
+fi
 
-# Copy zellij config
-cp -v "$SCRIPT_DIR/shell/zellij/config.kdl" ~/.shell/zellij/
+if [[ "$INSTALL_ZELLIJ_CONFIG" == true ]]; then
+  cp -v "$SCRIPT_DIR/shell/zellij/config.kdl" ~/.shell/zellij/
+fi
 
 # ============================================================
 # SYMLINKS
@@ -185,12 +287,16 @@ echo ""
 echo "▶ Creating symlinks..."
 
 # Antidote plugins list
-ln -sf ~/.shell/zsh/plugins.list ~/.zsh_plugins.txt
-echo "  ✔ ~/.zsh_plugins.txt -> ~/.shell/zsh/plugins.list"
+if [[ "$INSTALL_ANTIDOTE" == true ]]; then
+  ln -sf ~/.shell/zsh/plugins.list ~/.zsh_plugins.txt
+  echo "  ✔ ~/.zsh_plugins.txt -> ~/.shell/zsh/plugins.list"
+fi
 
 # Starship config (XDG compatibility)
-ln -sf ~/.shell/starship/starship.toml ~/.config/starship/starship.toml
-echo "  ✔ ~/.config/starship/starship.toml -> ~/.shell/starship/starship.toml"
+if [[ "$INSTALL_STARSHIP_CONFIG" == true ]]; then
+  ln -sf ~/.shell/starship/starship.toml ~/.config/starship/starship.toml
+  echo "  ✔ ~/.config/starship/starship.toml -> ~/.shell/starship/starship.toml"
+fi
 
 # ============================================================
 # SHELL LOADER FILES
@@ -208,6 +314,10 @@ echo "  ✔ ~/.zprofile"
 cat > ~/.zshrc <<'EOF'
 export ZSH="$HOME/.oh-my-zsh"
 
+# Initialize completion system FIRST (required for compdef)
+autoload -Uz compinit
+compinit -C
+
 # Load Antidote plugin manager
 source "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
 
@@ -224,6 +334,9 @@ source "$ZSH/oh-my-zsh.sh"
 
 # fzf key bindings and completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Rehash PATH to pick up new binaries
+hash -r 2>/dev/null
 EOF
 echo "  ✔ ~/.zshrc"
 
@@ -243,14 +356,17 @@ if [[ -d "$BACKUP_DIR" ]]; then
   echo "   To restore: cp -R $BACKUP_DIR/* ~/"
 fi
 
-echo ""
-echo "📝 IMPORTANT: For best experience, install a Nerd Font"
-echo "   Recommended: JetBrainsMono Nerd Font"
-echo ""
-echo "   brew tap homebrew/cask-fonts"
-echo "   brew install --cask font-jetbrains-mono-nerd-font"
-echo ""
-echo "   Then set it in Warp → Settings → Appearance → Font"
+if [[ "$INSTALL_NERD_FONT" != true ]]; then
+  echo ""
+  echo "📝 IMPORTANT: For best experience, install a Nerd Font"
+  echo "   Enable INSTALL_NERD_FONT=true in config.sh, or manually:"
+  echo ""
+  echo "   brew tap homebrew/cask-fonts"
+  echo "   brew install --cask font-jetbrains-mono-nerd-font"
+  echo ""
+  echo "   Then set it in Warp → Settings → Appearance → Font"
+fi
+
 echo ""
 echo "════════════════════════════════════════════════════════"
 echo ""

@@ -1,4 +1,9 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew environment (Apple Silicon and Intel Mac compatible)
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
 
 export PATH="$HOME/bin:$HOME/.local/bin:$HOME/.antigravity/antigravity/bin:$PATH"
 
@@ -23,8 +28,10 @@ export SAVEHIST=100000
 export HISTFILE="$HOME/.zsh_history"
 
 # ============================================================
-# ZSH OPTIONS
+# ZSH OPTIONS (only in interactive shells)
 # ============================================================
+# Guard: setopt and zstyle only work in interactive shells
+[[ $- == *i* ]] && {
 setopt HIST_IGNORE_ALL_DUPS    # Remove older duplicate entries from history
 setopt HIST_REDUCE_BLANKS      # Remove superfluous blanks from history
 setopt HIST_VERIFY             # Don't execute immediately on history expansion
@@ -50,6 +57,7 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"     # Colorize completio
 zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
 zstyle ':completion:*:warnings' format '%F{red}-- no matches --%f'
 zstyle ':completion:*' group-name ''                        # Group by category
+}  # End of interactive shell guard
 
 # ============================================================
 # FZF CONFIGURATION
