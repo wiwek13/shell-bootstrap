@@ -55,10 +55,38 @@ INSTALL_ZELLIJ_CONFIG=true  # Zellij terminal config
 # ============================================================
 # Set to true to auto-install JetBrainsMono Nerd Font
 # Required for icons in prompt and eza
-INSTALL_NERD_FONT=false
+INSTALL_NERD_FONT=true
 
 # ============================================================
-# APPLICATIONS (apps.txt)
+# APPLICATIONS (Brewfile)
 # ============================================================
-# Set to true to install applications from apps.txt
+# Set to true to install applications from Brewfile
 INSTALL_APPS=true
+
+# ============================================================
+# RAYCAST & MOLE INTEGRATION
+# ============================================================
+# Set to true to install Raycast (Spotlight replacement)
+INSTALL_RAYCAST=false
+
+# Set to true to install Mole quick launchers for Raycast/Alfred
+# Runs: curl -fsSL https://raw.githubusercontent.com/tw93/Mole/main/scripts/setup-quick-launchers.sh | bash
+INSTALL_MOLE_LAUNCHERS=false
+
+# ============================================================
+# AI CODING AGENTS (OpenCode)
+# ============================================================
+# Set to true to install OpenCode (AI terminal coding agent)
+# Already in Brewfile, this is for explicit control
+INSTALL_OPENCODE=true
+
+# Set to true to install Oh My OpenCode (multi-agent extension)
+# Runs: npx oh-my-opencode install --no-tui
+INSTALL_OH_MY_OPENCODE=true
+
+# ============================================================
+# BACKUP MANAGEMENT
+# ============================================================
+# Number of backup folders to keep (older ones are auto-deleted)
+# Set to 0 to disable automatic cleanup
+BACKUPS_TO_KEEP=1

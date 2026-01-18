@@ -81,6 +81,35 @@ backup_if_exists() {
   fi
 }
 
+# Cleanup old backups, keeping only the N most recent
+cleanup_old_backups() {
+  local keep="${BACKUPS_TO_KEEP:-5}"
+  
+  # Skip if disabled (0 or empty)
+  if [[ "$keep" -le 0 ]]; then
+    return 0
+  fi
+  
+  # Find all backup directories, sorted by date (oldest first)
+  local backups=()
+  while IFS= read -r dir; do
+    [[ -d "$dir" ]] && backups+=("$dir")
+  done < <(ls -dt "$HOME"/.shell-backup-* 2>/dev/null)
+  
+  local total=${#backups[@]}
+  local to_delete=$((total - keep))
+  
+  if [[ $to_delete -gt 0 ]]; then
+    echo ""
+    echo "▶ Cleaning up old backups (keeping $keep most recent)..."
+    for ((i = keep; i < total; i++)); do
+      rm -rf "${backups[$i]}"
+      echo "  🗑️ Removed: ${backups[$i]}"
+    done
+    echo "  ✔ Removed $to_delete old backup(s)"
+  fi
+}
+
 echo "▶ Checking for existing configurations..."
 
 EXISTING_FILES=()
@@ -153,7 +182,7 @@ install_pkg() {
     echo "  Installing $pkg..."
     brew install "$pkg"
   else
-    echo "  ✔ $pkg"
+    echo "  ⏭ $pkg (already installed)"
   fi
 }
 
@@ -202,7 +231,7 @@ if [[ "$INSTALL_ET" == true ]]; then
     brew tap MisterTea/et 2>/dev/null || true
     brew install MisterTea/et/et
   else
-    echo "  ✔ et"
+    echo "  ⏭ et (already installed)"
   fi
 else
   skip_pkg "et"
@@ -343,52 +372,83 @@ echo "  ✔ ~/.zshrc"
 # ============================================================
 # INSTALL APPLICATIONS FROM apps.txt
 # ============================================================
-APPS_FILE="$SCRIPT_DIR/apps.txt"
-if [[ "${INSTALL_APPS:-true}" == true ]] && [[ -f "$APPS_FILE" ]]; then
+APPS_FILE="$SCRIPT_DIR/Brewfile"
+if [[ "${INSTALL_APPS:-true}" == true ]]; then
+  if [[ -f "$APPS_FILE" ]]; then
+    echo ""
+    echo "▶ Installing applications from Brewfile..."
+    
+    # Ensure Homebrew bundle is available (it's built-in, but good to check)
+    brew bundle check --file="$APPS_FILE" >/dev/null 2>&1 || {
+      echo "  Running brew bundle..."
+      brew bundle --file="$APPS_FILE" || echo "  ⚠️ Some packages failed to install. Check output above."
+    }
+    echo "  ✅ Applications up to date"
+  else
+    echo "  ⏭ No Brewfile found, skipping application installation"
+  fi
+fi
+
+# ============================================================
+# INSTALL RAYCAST (if enabled)
+# ============================================================
+if [[ "${INSTALL_RAYCAST:-false}" == true ]]; then
   echo ""
-  echo "▶ Installing applications from apps.txt..."
-  
-  while IFS= read -r line || [[ -n "$line" ]]; do
-    # Skip empty lines and comments
-    [[ -z "$line" ]] && continue
-    [[ "$line" =~ ^[[:space:]]*# ]] && continue
-    
-    # Extract package name (remove inline comments)
-    pkg=$(echo "$line" | sed 's/#.*//' | xargs)
-    [[ -z "$pkg" ]] && continue
-    
-    # Check if it's a tap
-    if [[ "$pkg" == --tap* ]]; then
-      tap_name=$(echo "$pkg" | sed 's/--tap //')
-      if ! brew tap | grep -q "^$tap_name$"; then
-        echo "  Tapping $tap_name..."
-        brew tap "$tap_name" || echo "    ⚠️ Failed to tap $tap_name"
-      else
-        echo "  ⏭ Skipping $tap_name (already tapped)"
-      fi
-    # Check if it's a cask
-    elif [[ "$pkg" == --cask* ]]; then
-      cask_name=$(echo "$pkg" | sed 's/--cask //')
-      if ! brew list --cask "$cask_name" >/dev/null 2>&1; then
-        echo "  Installing (cask) $cask_name..."
-        brew install --cask "$cask_name" || echo "    ⚠️ Failed to install $cask_name"
-      else
-        echo "  ⏭ Skipping $cask_name (already installed)"
-      fi
+  echo "▶ Installing Raycast..."
+  if ! brew list --cask raycast >/dev/null 2>&1; then
+    brew install --cask raycast || echo "  ⚠️ Failed to install Raycast"
+  else
+    echo "  ⏭ Raycast already installed"
+  fi
+fi
+
+# ============================================================
+# INSTALL MOLE QUICK LAUNCHERS (if enabled)
+# ============================================================
+if [[ "${INSTALL_MOLE_LAUNCHERS:-false}" == true ]]; then
+  echo ""
+  echo "▶ Installing Mole quick launchers for Raycast/Alfred..."
+  curl -fsSL https://raw.githubusercontent.com/tw93/Mole/main/scripts/setup-quick-launchers.sh | bash || echo "  ⚠️ Failed to install Mole launchers"
+  echo "  ✔ Mole launchers installed"
+fi
+
+# ============================================================
+# INSTALL OPENCODE (if enabled and not already installed)
+# ============================================================
+if [[ "${INSTALL_OPENCODE:-true}" == true ]]; then
+  if ! command -v opencode &>/dev/null; then
+    echo ""
+    echo "▶ Installing OpenCode..."
+    brew tap anomalyco/tap 2>/dev/null || true
+    brew install anomalyco/tap/opencode || echo "  ⚠️ Failed to install OpenCode"
+  else
+    echo ""
+    echo "  ✔ OpenCode already installed ($(opencode --version 2>/dev/null || echo 'unknown version'))"
+  fi
+fi
+
+# ============================================================
+# INSTALL OH MY OPENCODE (if enabled)
+# ============================================================
+if [[ "${INSTALL_OH_MY_OPENCODE:-false}" == true ]]; then
+  echo ""
+  echo "▶ Installing Oh My OpenCode (multi-agent extension)..."
+  if command -v npx &>/dev/null; then
+    if npx -y oh-my-opencode install --no-tui; then
+      echo "  ✔ Oh My OpenCode installed"
     else
-      # Regular formula (supports tap/formula format like hashicorp/tap/terraform)
-      formula_name=$(echo "$pkg" | awk -F'/' '{print $NF}')
-      if ! brew list "$formula_name" >/dev/null 2>&1; then
-        echo "  Installing $pkg..."
-        brew install "$pkg" || echo "    ⚠️ Failed to install $pkg"
-      else
-        echo "  ⏭ Skipping $pkg (already installed)"
-      fi
+      echo "  ⚠️ Failed to install Oh My OpenCode"
     fi
-  done < "$APPS_FILE"
-else
-  echo ""
-  echo "⏭ No apps.txt found, skipping application installation"
+  elif command -v bunx &>/dev/null; then
+    if bunx -y oh-my-opencode install --no-tui; then
+      echo "  ✔ Oh My OpenCode installed"
+    else
+      echo "  ⚠️ Failed to install Oh My OpenCode"
+    fi
+  else
+    echo "  ⚠️ npx or bunx not found, skipping Oh My OpenCode"
+    echo "     Install manually: npx -y oh-my-opencode install"
+  fi
 fi
 
 # ============================================================
@@ -413,6 +473,9 @@ echo "  Final cleanup..."
 brew cleanup
 
 echo "  ✔ Maintenance complete"
+
+# Cleanup old backups
+cleanup_old_backups
 
 # ============================================================
 # DONE

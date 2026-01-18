@@ -41,7 +41,8 @@ cd shell-bootstrap
 
 # (Optional) Customize
 vim config.sh
-vim apps.txt
+vim config.sh
+vim Brewfile
 
 # Install
 ./bootstrap.sh
@@ -77,6 +78,7 @@ vim apps.txt
 | `fd` | 🔎 Fast find |
 | `zoxide` | 📂 Smarter `cd` |
 | `btop` | 📊 Beautiful system monitor |
+| `mole` | 🐹 Mac cleanup & optimizer |
 
 ### ☸️ DevOps Tools
 | Tool | Description |
@@ -88,8 +90,9 @@ vim apps.txt
 | `terraform` | 🏗️ Infrastructure as Code |
 | `argocd` | 🔄 GitOps CLI |
 | `trivy` | 🔒 Security scanner |
+| `opencode` | 🤖 AI terminal coding agent |
 
-### 🖥️ Desktop Apps (via `apps.txt`)
+### 🖥️ Desktop Apps (via `Brewfile`)
 | App | Description |
 |-----|-------------|
 | Warp | 🤖 AI-powered terminal |
@@ -150,6 +153,45 @@ tfi / tfp       # init / plan
 tfa             # apply
 ```
 
+### 🐹 Mole (System Optimizer)
+```bash
+mo                    # Interactive menu
+mo touchid            # Enable Touch ID for sudo (RECOMMENDED!)
+mo completion         # Setup shell tab completion
+mo status             # Live system health dashboard
+mo clean              # Deep cleanup
+mo clean --dry-run    # Preview cleanup first
+mo analyze            # Visual disk explorer
+mo uninstall          # Remove apps + leftovers
+mo optimize           # Refresh caches & services
+mo purge              # Clean project build artifacts
+```
+
+> **💡 Tips:**
+> - Always run `mo clean --dry-run` first to preview
+> - Use `--debug` for detailed logs
+> - Supports Vim bindings (`h/j/k/l`)
+> - In `mo status`, press `k` to toggle cat, `q` to quit
+> - **Optional:** Install quick launchers for Raycast/Alfred:
+>   ```bash
+>   curl -fsSL https://raw.githubusercontent.com/tw93/Mole/main/scripts/setup-quick-launchers.sh | bash
+>   ```
+
+### 🤖 OpenCode (AI Terminal Agent)
+```bash
+opencode                      # Start AI coding session
+opencode --version            # Check version
+```
+
+> **💡 Oh My OpenCode** (Multi-Agent Extension):
+> ```bash
+> # Install Oh My OpenCode for enhanced multi-agent capabilities
+> npx oh-my-opencode install
+> # Or with bun
+> bunx oh-my-opencode install
+> ```
+> Features: Background agents, Git mastery, multi-model support (Claude/ChatGPT/Gemini)
+
 ---
 
 ## 📚 Documentation
@@ -181,7 +223,7 @@ shell-bootstrap/
 ├── 📄 bootstrap.sh          # Main installer
 ├── 📄 uninstall.sh          # Uninstaller
 ├── ⚙️ config.sh             # Installation config
-├── 📋 apps.txt              # Desktop apps list
+├── 🍺 Brewfile              # Desktop apps list
 ├── 📚 docs/                 # Documentation
 └── 🐚 shell/
     ├── zsh/
