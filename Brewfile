@@ -109,7 +109,7 @@ cask "google-chrome"          # Google Chrome
 # ⚡ PRODUCTIVITY & UTILITIES
 # ============================================================
 cask "maccy"                  # Clipboard manager
-# cask "raycast"                # Spotlight replacement (Highly Recommended)
+cask "raycast"                # Spotlight replacement (Highly Recommended)
 # cask "rectangle"              # Window management
 # cask "hiddenbar"              # Menu bar organizer
 # cask "appcleaner"             # Clean app uninstaller

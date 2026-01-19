@@ -67,12 +67,11 @@ INSTALL_APPS=true
 # RAYCAST & MOLE INTEGRATION
 # ============================================================
 # Set to true to install Raycast (Spotlight replacement)
-INSTALL_RAYCAST=false
+INSTALL_RAYCAST=true
 
 # Set to true to install Mole quick launchers for Raycast/Alfred
 # Runs: curl -fsSL https://raw.githubusercontent.com/tw93/Mole/main/scripts/setup-quick-launchers.sh | bash
-INSTALL_MOLE_LAUNCHERS=false
-
+INSTALL_MOLE_LAUNCHERS=true
 # ============================================================
 # AI CODING AGENTS (OpenCode)
 # ============================================================
