@@ -12,9 +12,7 @@ zdharma-continuum/fast-syntax-highlighting  # Faster, better syntax highlighting
 # ============================================================
 # PRODUCTIVITY
 # ============================================================
-rupa/z                                  # Jump to frequently used directories (fallback if no zoxide)
 Aloxaf/fzf-tab                          # Replace completion menu with fzf
-djui/alias-tips                         # Reminds you of aliases when typing full command
 MichaelAquilina/zsh-you-should-use      # Suggests aliases for commands you type
 
 # ============================================================

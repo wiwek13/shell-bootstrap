@@ -26,9 +26,9 @@ aws-assume() {
     echo "❌ Failed to assume role"
     return 1
   fi
-  export AWS_ACCESS_KEY_ID=$(echo $creds | jq -r '.Credentials.AccessKeyId')
-  export AWS_SECRET_ACCESS_KEY=$(echo $creds | jq -r '.Credentials.SecretAccessKey')
-  export AWS_SESSION_TOKEN=$(echo $creds | jq -r '.Credentials.SessionToken')
+  export AWS_ACCESS_KEY_ID=$(echo "$creds" | jq -r '.Credentials.AccessKeyId')
+  export AWS_SECRET_ACCESS_KEY=$(echo "$creds" | jq -r '.Credentials.SecretAccessKey')
+  export AWS_SESSION_TOKEN=$(echo "$creds" | jq -r '.Credentials.SessionToken')
   echo "✔ Assumed role: $1"
 }
 
@@ -478,11 +478,11 @@ note() {
 
 # URL encode/decode
 urlencode() {
-  python3 -c "import urllib.parse; print(urllib.parse.quote('$1'))"
+  python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))" "$1"
 }
 
 urldecode() {
-  python3 -c "import urllib.parse; print(urllib.parse.unquote('$1'))"
+  python3 -c "import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1]))" "$1"
 }
 
 # Base64 shortcuts

@@ -198,30 +198,30 @@ echo ""
 echo "▶ Installing packages..."
 
 # Shell core
-[[ "$INSTALL_ANTIDOTE" == true ]] && install_pkg "antidote" || skip_pkg "antidote"
-[[ "$INSTALL_STARSHIP" == true ]] && install_pkg "starship" || skip_pkg "starship"
-[[ "$INSTALL_ZELLIJ" == true ]] && install_pkg "zellij" || skip_pkg "zellij"
+if [[ "$INSTALL_ANTIDOTE" == true ]]; then install_pkg "antidote"; else skip_pkg "antidote"; fi
+if [[ "$INSTALL_STARSHIP" == true ]]; then install_pkg "starship"; else skip_pkg "starship"; fi
+if [[ "$INSTALL_ZELLIJ" == true ]]; then install_pkg "zellij"; else skip_pkg "zellij"; fi
 
 # CLI essentials
-[[ "$INSTALL_BAT" == true ]] && install_pkg "bat" || skip_pkg "bat"
-[[ "$INSTALL_EZA" == true ]] && install_pkg "eza" || skip_pkg "eza"
-[[ "$INSTALL_FZF" == true ]] && install_pkg "fzf" || skip_pkg "fzf"
-[[ "$INSTALL_FD" == true ]] && install_pkg "fd" || skip_pkg "fd"
-[[ "$INSTALL_RIPGREP" == true ]] && install_pkg "ripgrep" || skip_pkg "ripgrep"
-[[ "$INSTALL_JQ" == true ]] && install_pkg "jq" || skip_pkg "jq"
-[[ "$INSTALL_YQ" == true ]] && install_pkg "yq" || skip_pkg "yq"
-[[ "$INSTALL_AG" == true ]] && install_pkg "the_silver_searcher" || skip_pkg "the_silver_searcher"
-[[ "$INSTALL_ZOXIDE" == true ]] && install_pkg "zoxide" || skip_pkg "zoxide"
+if [[ "$INSTALL_BAT" == true ]]; then install_pkg "bat"; else skip_pkg "bat"; fi
+if [[ "$INSTALL_EZA" == true ]]; then install_pkg "eza"; else skip_pkg "eza"; fi
+if [[ "$INSTALL_FZF" == true ]]; then install_pkg "fzf"; else skip_pkg "fzf"; fi
+if [[ "$INSTALL_FD" == true ]]; then install_pkg "fd"; else skip_pkg "fd"; fi
+if [[ "$INSTALL_RIPGREP" == true ]]; then install_pkg "ripgrep"; else skip_pkg "ripgrep"; fi
+if [[ "$INSTALL_JQ" == true ]]; then install_pkg "jq"; else skip_pkg "jq"; fi
+if [[ "$INSTALL_YQ" == true ]]; then install_pkg "yq"; else skip_pkg "yq"; fi
+if [[ "$INSTALL_AG" == true ]]; then install_pkg "the_silver_searcher"; else skip_pkg "the_silver_searcher"; fi
+if [[ "$INSTALL_ZOXIDE" == true ]]; then install_pkg "zoxide"; else skip_pkg "zoxide"; fi
 
 # System utilities
-[[ "$INSTALL_TREE" == true ]] && install_pkg "tree" || skip_pkg "tree"
-[[ "$INSTALL_WATCH" == true ]] && install_pkg "watch" || skip_pkg "watch"
-[[ "$INSTALL_HTOP" == true ]] && install_pkg "htop" || skip_pkg "htop"
+if [[ "$INSTALL_TREE" == true ]]; then install_pkg "tree"; else skip_pkg "tree"; fi
+if [[ "$INSTALL_WATCH" == true ]]; then install_pkg "watch"; else skip_pkg "watch"; fi
+if [[ "$INSTALL_HTOP" == true ]]; then install_pkg "htop"; else skip_pkg "htop"; fi
 
 # DevOps tools
-[[ "$INSTALL_KUBECTX" == true ]] && install_pkg "kubectx" || skip_pkg "kubectx"
-[[ "$INSTALL_STERN" == true ]] && install_pkg "stern" || skip_pkg "stern"
-[[ "$INSTALL_K9S" == true ]] && install_pkg "k9s" || skip_pkg "k9s"
+if [[ "$INSTALL_KUBECTX" == true ]]; then install_pkg "kubectx"; else skip_pkg "kubectx"; fi
+if [[ "$INSTALL_STERN" == true ]]; then install_pkg "stern"; else skip_pkg "stern"; fi
+if [[ "$INSTALL_K9S" == true ]]; then install_pkg "k9s"; else skip_pkg "k9s"; fi
 
 # Eternal Terminal (requires tap)
 if [[ "$INSTALL_ET" == true ]]; then
@@ -270,7 +270,6 @@ fi
 if [[ "$INSTALL_NERD_FONT" == true ]]; then
   echo ""
   echo "▶ Installing Nerd Font..."
-  brew tap homebrew/cask-fonts 2>/dev/null || true
   if ! brew list --cask font-jetbrains-mono-nerd-font >/dev/null 2>&1; then
     brew install --cask font-jetbrains-mono-nerd-font
   else
@@ -350,16 +349,16 @@ compinit -C
 # Load Antidote plugin manager
 source "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
 
-# Source all zsh configs
-for f in "$HOME"/.shell/zsh/*.zsh; do
-  source "$f"
-done
-
 # Load plugins via Antidote
 antidote load
 
 # Initialize Oh My Zsh runtime
 source "$ZSH/oh-my-zsh.sh"
+
+# Source all zsh configs AFTER OMZ so custom aliases take precedence
+for f in "$HOME"/.shell/zsh/*.zsh; do
+  source "$f"
+done
 
 # fzf key bindings and completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -370,7 +369,7 @@ EOF
 echo "  ✔ ~/.zshrc"
 
 # ============================================================
-# INSTALL APPLICATIONS FROM apps.txt
+# INSTALL APPLICATIONS FROM BREWFILE
 # ============================================================
 APPS_FILE="$SCRIPT_DIR/Brewfile"
 if [[ "${INSTALL_APPS:-true}" == true ]]; then
@@ -389,18 +388,8 @@ if [[ "${INSTALL_APPS:-true}" == true ]]; then
   fi
 fi
 
-# ============================================================
-# INSTALL RAYCAST (if enabled)
-# ============================================================
-if [[ "${INSTALL_RAYCAST:-false}" == true ]]; then
-  echo ""
-  echo "▶ Installing Raycast..."
-  if ! brew list --cask raycast >/dev/null 2>&1; then
-    brew install --cask raycast || echo "  ⚠️ Failed to install Raycast"
-  else
-    echo "  ⏭ Raycast already installed"
-  fi
-fi
+# NOTE: Raycast is installed via Brewfile (cask "raycast")
+# No separate install block needed — Brewfile is the single source of truth
 
 # ============================================================
 # INSTALL MOLE QUICK LAUNCHERS (if enabled)
@@ -455,17 +444,18 @@ echo "▶ Running post-install maintenance..."
 echo "  Updating Homebrew..."
 brew update
 
-echo "  Upgrading packages..."
-brew upgrade
+if [[ "${BREW_UPGRADE_ALL:-false}" == true ]]; then
+  echo "  Upgrading all packages..."
+  brew upgrade
+else
+  echo "  ⏭ Skipping brew upgrade (set BREW_UPGRADE_ALL=true in config.sh to enable)"
+fi
 
 echo "  Running cleanup..."
 brew cleanup -s
 
 echo "  Running diagnostics..."
 brew doctor || true
-
-echo "  Final cleanup..."
-brew cleanup
 
 echo "  ✔ Maintenance complete"
 
@@ -493,7 +483,6 @@ if [[ "$INSTALL_NERD_FONT" != true ]]; then
   echo "📝 IMPORTANT: For best experience, install a Nerd Font"
   echo "   Enable INSTALL_NERD_FONT=true in config.sh, or manually:"
   echo ""
-  echo "   brew tap homebrew/cask-fonts"
   echo "   brew install --cask font-jetbrains-mono-nerd-font"
   echo ""
   echo "   Then set it in Warp → Settings → Appearance → Font"

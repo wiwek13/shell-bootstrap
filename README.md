@@ -115,7 +115,7 @@ INSTALL_K9S=true          # 🐶 K8s TUI
 
 # Optional
 INSTALL_NERD_FONT=true    # 🔤 Required for icons
-INSTALL_APPS=true         # 📦 Install from apps.txt
+INSTALL_APPS=true         # 📦 Install from Brewfile
 ```
 
 ---

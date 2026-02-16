@@ -304,12 +304,19 @@ if [[ "$UNINSTALL_SHELL_CONFIG" == true ]]; then
   remove_if_exists "$HOME/.zprofile" || true
   remove_if_exists "$HOME/.zsh_plugins.txt" || true
   remove_if_exists "$HOME/.zsh_plugins.zsh" || true
-  remove_if_exists "$HOME/.config/starship" || true
-  remove_if_exists "$HOME/.fzf.zsh" || true
-  remove_if_exists "$HOME/.fzf.bash" || true
   remove_if_exists "$HOME/.cache/antidote" || true
   
   echo ""
+fi
+
+# Granular config removal (can be set independently of UNINSTALL_SHELL_CONFIG)
+if [[ "${UNINSTALL_STARSHIP_CONFIG:-$UNINSTALL_SHELL_CONFIG}" == true ]]; then
+  remove_if_exists "$HOME/.config/starship" || true
+fi
+
+if [[ "${UNINSTALL_FZF_CONFIG:-$UNINSTALL_SHELL_CONFIG}" == true ]]; then
+  remove_if_exists "$HOME/.fzf.zsh" || true
+  remove_if_exists "$HOME/.fzf.bash" || true
 fi
 
 # ============================================================

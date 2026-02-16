@@ -192,7 +192,7 @@ alias dlf='docker logs -f'
 alias dlt='docker logs --tail=100'
 alias dlft='docker logs -f --tail=100'
 alias dstop='docker stop'
-alias dstopa='docker stop $(docker ps -q)'
+alias dstopa='docker ps -q | xargs docker stop 2>/dev/null || echo "No running containers"'
 alias dstart='docker start'
 alias drestart='docker restart'
 alias dinspect='docker inspect'
@@ -346,7 +346,7 @@ alias lock='pmset displaysleepnow'
 alias sleep='pmset sleepnow'
 
 # Update
-alias brewup='brew update && brew upgrade && brew cleanup'
+alias brewup='brew update && brew upgrade && brew cleanup && brew doctor'
 
 # ============================================================
 # QUICK EDITS

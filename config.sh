@@ -66,8 +66,7 @@ INSTALL_APPS=true
 # ============================================================
 # RAYCAST & MOLE INTEGRATION
 # ============================================================
-# Set to true to install Raycast (Spotlight replacement)
-INSTALL_RAYCAST=true
+# NOTE: Raycast is installed via Brewfile (cask "raycast")
 
 # Set to true to install Mole quick launchers for Raycast/Alfred
 # Runs: curl -fsSL https://raw.githubusercontent.com/tw93/Mole/main/scripts/setup-quick-launchers.sh | bash
@@ -89,3 +88,10 @@ INSTALL_OH_MY_OPENCODE=true
 # Number of backup folders to keep (older ones are auto-deleted)
 # Set to 0 to disable automatic cleanup
 BACKUPS_TO_KEEP=1
+
+# ============================================================
+# POST-INSTALL MAINTENANCE
+# ============================================================
+# Set to true to run `brew upgrade` on ALL packages during bootstrap
+# WARNING: This upgrades everything system-wide, not just bootstrap packages
+BREW_UPGRADE_ALL=false
