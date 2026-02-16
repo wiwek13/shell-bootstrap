@@ -359,3 +359,14 @@ alias et='${EDITOR:-nano} ~/.shell/zsh/tools.zsh && source ~/.zshrc'
 alias es='${EDITOR:-nano} ~/.shell/starship/starship.toml'
 alias ez='${EDITOR:-nano} ~/.shell/zellij/config.kdl'
 
+# ============================================================
+# SHELL CONFIG AGENT
+# ============================================================
+# AI-powered shell config maintenance (requires OpenRouter API key)
+# Default is preview/dry-run mode. Use --apply to make changes.
+SHELL_BOOTSTRAP_DIR="${SHELL_BOOTSTRAP_DIR:-$HOME/Documents/Projects/shell-bootstrap}"
+alias shell-organize='$SHELL_BOOTSTRAP_DIR/agent/organize_shell.sh'           # Preview (default)
+alias shell-organize-apply='$SHELL_BOOTSTRAP_DIR/agent/organize_shell.sh --apply'  # Apply changes
+alias shell-sync='$SHELL_BOOTSTRAP_DIR/agent/sync_to_project.sh'
+alias shell-sync-dry='$SHELL_BOOTSTRAP_DIR/agent/sync_to_project.sh --dry-run'
+

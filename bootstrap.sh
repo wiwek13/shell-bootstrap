@@ -433,21 +433,16 @@ fi
 if [[ "${INSTALL_OH_MY_OPENCODE:-false}" == true ]]; then
   echo ""
   echo "▶ Installing Oh My OpenCode (multi-agent extension)..."
-  if command -v npx &>/dev/null; then
-    if npx -y oh-my-opencode install --no-tui; then
-      echo "  ✔ Oh My OpenCode installed"
-    else
-      echo "  ⚠️ Failed to install Oh My OpenCode"
-    fi
-  elif command -v bunx &>/dev/null; then
-    if bunx -y oh-my-opencode install --no-tui; then
+  if command -v bunx &>/dev/null; then
+    if bunx oh-my-opencode install --no-tui --claude=no --chatgpt=no --gemini=no; then
       echo "  ✔ Oh My OpenCode installed"
     else
       echo "  ⚠️ Failed to install Oh My OpenCode"
     fi
   else
-    echo "  ⚠️ npx or bunx not found, skipping Oh My OpenCode"
-    echo "     Install manually: npx -y oh-my-opencode install"
+    echo "  ⚠️ bun not found, skipping Oh My OpenCode"
+    echo "     Install bun first: brew tap oven-sh/bun && brew install bun"
+    echo "     Then run: bunx oh-my-opencode install"
   fi
 fi
 

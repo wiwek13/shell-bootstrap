@@ -1,0 +1,4 @@
+{
+    "provider": "openrouter",
+    "model": "mistralai/devstral-2512:free"
+}

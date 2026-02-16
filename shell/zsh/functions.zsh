@@ -172,8 +172,8 @@ gac() {
   git add -A && git commit -m "$*"
 }
 
-# Push and set upstream
-gpu() {
+# Push and set upstream (use gpush to avoid OMZ git plugin alias conflict)
+gpush() {
   git push -u origin $(git branch --show-current)
 }
 

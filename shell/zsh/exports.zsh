@@ -97,3 +97,11 @@ export LC_ALL="en_US.UTF-8"
 export PAGER="less -RF"
 export LESS="-R"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# ============================================================
+# SHELL AGENT (Shell Config Organizer)
+# ============================================================
+# Model for shell agent (via OpenRouter)
+export SHELL_AGENT_MODEL="${SHELL_AGENT_MODEL:-openrouter/mistralai/devstral-2512:free}"
+# OpenRouter API key for shell agent (get free at https://openrouter.ai/keys)
+export SHELL_AGENT_OPENROUTER_KEY="${SHELL_AGENT_OPENROUTER_KEY:-$OPENROUTER_API_KEY}"

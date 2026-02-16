@@ -71,7 +71,7 @@ INSTALL_RAYCAST=true
 
 # Set to true to install Mole quick launchers for Raycast/Alfred
 # Runs: curl -fsSL https://raw.githubusercontent.com/tw93/Mole/main/scripts/setup-quick-launchers.sh | bash
-INSTALL_MOLE_LAUNCHERS=true
+INSTALL_MOLE_LAUNCHERS=false
 # ============================================================
 # AI CODING AGENTS (OpenCode)
 # ============================================================

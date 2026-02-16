@@ -26,6 +26,7 @@
 | ⚡ **200+ Aliases** | Shortcuts for Git, kubectl, Terraform, Docker |
 | 🔌 **Smart Plugins** | fzf-tab, autosuggestions, syntax highlighting |
 | 📦 **50+ DevOps Tools** | k9s, stern, helm, argocd, trivy, and more |
+| 🤖 **Shell Agent** ⚠️ | AI config optimizer (experimental) - history, best practices |
 | 🛠️ **Configurable** | Toggle any package on/off via `config.sh` |
 | 🔄 **Idempotent** | Safe to re-run, auto-creates backups |
 
@@ -40,7 +41,6 @@ git clone https://github.com/yourusername/shell-bootstrap.git
 cd shell-bootstrap
 
 # (Optional) Customize
-vim config.sh
 vim config.sh
 vim Brewfile
 
@@ -79,6 +79,7 @@ vim Brewfile
 | `zoxide` | 📂 Smarter `cd` |
 | `btop` | 📊 Beautiful system monitor |
 | `mole` | 🐹 Mac cleanup & optimizer |
+| `bun` | ⚡ Fast JS runtime (for oh-my-opencode) |
 
 ### ☸️ DevOps Tools
 | Tool | Description |
@@ -128,6 +129,7 @@ gp              # git push
 gl              # git log --oneline
 gco-fzf         # checkout with fuzzy search
 gac "msg"       # add all + commit
+gpush           # push and set upstream
 ```
 
 ### ☸️ Kubernetes
@@ -185,12 +187,29 @@ opencode --version            # Check version
 
 > **💡 Oh My OpenCode** (Multi-Agent Extension):
 > ```bash
-> # Install Oh My OpenCode for enhanced multi-agent capabilities
-> npx oh-my-opencode install
-> # Or with bun
-> bunx oh-my-opencode install
+> # Requires bun runtime (auto-installed via Brewfile)
+> bunx oh-my-opencode install --no-tui --claude=no --chatgpt=no --gemini=no
 > ```
-> Features: Background agents, Git mastery, multi-model support (Claude/ChatGPT/Gemini)
+> Features: Background agents, Git mastery, multi-model support
+
+### 🧹 Shell Config Agent ⚠️
+> **Experimental** - AI-powered shell optimization with privacy protection.
+
+```bash
+shell-organize              # Preview only (safe, default)
+shell-organize-apply        # Apply changes (creates backup)
+shell-sync                  # Sync ~/.shell/ to project
+```
+
+> **💡 Configuration** (in `~/.shell/zsh/exports.zsh`):
+> ```bash
+> export SHELL_AGENT_MODEL="openrouter/mistralai/devstral-2512:free"
+> export SHELL_AGENT_OPENROUTER_KEY="your-key"
+> ```
+> 
+> 🪄 **Pro Tip:** Include `ultrawork` or `ulw` in prompts for parallel agents.
+> 
+> 🔒 **Privacy:** Only analyzes command frequency, never stores secrets.
 
 ---
 
@@ -204,6 +223,7 @@ opencode --version            # Check version
 | [🔀 Git Workflow](docs/git-workflow.md) | Aliases, lazygit, gh |
 | [🍎 macOS Apps](docs/macos-apps.md) | Warp, OrbStack, Lens |
 | [⚡ Productivity](docs/productivity-tips.md) | Workflows & shortcuts |
+| [🤖 Shell Agent](docs/shell-agent.md) | OpenCode, OpenRouter setup |
 
 ---
 
@@ -225,6 +245,10 @@ shell-bootstrap/
 ├── ⚙️ config.sh             # Installation config
 ├── 🍺 Brewfile              # Desktop apps list
 ├── 📚 docs/                 # Documentation
+├── 🤖 agent/                # Shell Config Agent
+│   ├── organize_shell.sh   # Organize shell configs
+│   ├── sync_to_project.sh  # Sync to project
+│   └── prompts/            # Agent prompts
 └── 🐚 shell/
     ├── zsh/
     │   ├── aliases.zsh      # 200+ aliases

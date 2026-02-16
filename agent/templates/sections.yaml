@@ -1,0 +1,79 @@
+# Section Definitions for Shell Config Files
+# Used by the shell organizer agent to categorize content
+
+sections:
+  exports:
+    file: exports.zsh
+    patterns:
+      - "^export "
+      - "^setopt "
+      - "^zstyle "
+    categories:
+      - name: "HOMEBREW"
+        description: "Homebrew environment setup"
+        patterns: ["brew shellenv", "HOMEBREW_"]
+      
+      - name: "PATH"
+        description: "PATH modifications"
+        patterns: ["export PATH=", "path+="]
+      
+      - name: "EDITOR"
+        description: "Editor settings"
+        patterns: ["EDITOR=", "VISUAL="]
+      
+      - name: "HISTORY"
+        description: "History settings"
+        patterns: ["HISTSIZE", "SAVEHIST", "HISTFILE"]
+      
+      - name: "ZSH OPTIONS"
+        description: "Shell options"
+        patterns: ["setopt "]
+      
+      - name: "COMPLETION"
+        description: "Completion styles"
+        patterns: ["zstyle ':completion"]
+      
+      - name: "FZF"
+        description: "FZF configuration"
+        patterns: ["FZF_"]
+      
+      - name: "KUBERNETES"
+        description: "Kubernetes settings"
+        patterns: ["KUBECONFIG"]
+      
+      - name: "LOCALE"
+        description: "Language/locale settings"
+        patterns: ["LANG=", "LC_"]
+      
+      - name: "PAGER"
+        description: "Pager settings"
+        patterns: ["PAGER=", "LESS=", "MANPAGER="]
+
+  aliases:
+    file: aliases.zsh
+    patterns:
+      - "^alias "
+    categories:
+      - name: "NAVIGATION & FILES"
+      - name: "GIT"
+      - name: "KUBERNETES"
+      - name: "DOCKER"
+      - name: "TERRAFORM"
+      - name: "AWS CLI"
+      - name: "NETWORKING & DEBUGGING"
+      - name: "SYSTEM"
+      - name: "QUICK EDITS"
+      - name: "SHELL CONFIG AGENT"
+
+  functions:
+    file: functions.zsh
+    patterns:
+      - "^function "
+      - "^[a-zA-Z_][a-zA-Z0-9_]*\\(\\) \\{"
+
+  tools:
+    file: tools.zsh
+    patterns:
+      - "eval \"\\$"
+      - "source "
+    description: "Tool initializations (starship, zoxide, etc.)"

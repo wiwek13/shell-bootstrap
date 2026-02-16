@@ -22,6 +22,8 @@ brew "node"                          # Node.js runtime
 brew "nvm"                           # (Formula) Node version manager
 brew "python"                        # Python 3
 brew "pyenv"                         # Python version manager
+tap "oven-sh/bun"                    # Bun runtime tap
+brew "bun"                           # Bun JS runtime (required for oh-my-opencode)
 
 # ============================================================
 # 🛠️ CLI CORE & HISTORY
