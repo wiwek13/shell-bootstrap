@@ -23,7 +23,7 @@ brew "nvm"                           # (Formula) Node version manager
 brew "python"                        # Python 3
 brew "pyenv"                         # Python version manager
 tap "oven-sh/bun"                    # Bun runtime tap
-brew "bun"                           # Bun JS runtime (required for oh-my-opencode)
+brew "oven-sh/bun/bun"               # Bun JS runtime (required for oh-my-opencode)
 
 # ============================================================
 # 🛠️ CLI CORE & HISTORY
@@ -50,9 +50,12 @@ brew "anomalyco/tap/opencode"        # AI terminal coding assistant
 # ☁️ INFRASTRUCTURE AS CODE (Terraform/AWS)
 # ============================================================
 brew "awscli"                        # AWS CLI v2
+cask "gcloud-cli"                    # Google Cloud SDK (gcloud CLI)
+brew "oci-cli"                       # Oracle Cloud Infrastructure CLI
 tap "hashicorp/tap"           # HashiCorp official tap
 brew "hashicorp/tap/terraform"       # Terraform from official tap
-brew "tfswitch"                      # Terraform version switcher
+tap "warrensbox/tap"                 # tfswitch tap
+brew "warrensbox/tap/tfswitch"       # Terraform version switcher
 
 # ============================================================
 # ☸️ KUBERNETES ECOSYSTEM
