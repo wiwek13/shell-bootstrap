@@ -305,9 +305,9 @@ docker-nuke() {
   echo "⚠️  This will remove ALL containers, images, volumes, and networks!"
   read "confirm?Are you sure? (y/N) "
   if [[ "$confirm" =~ ^[Yy]$ ]]; then
-    docker stop $(docker ps -aq) 2>/dev/null
-    docker rm $(docker ps -aq) 2>/dev/null
-    docker rmi $(docker images -q) 2>/dev/null
+    docker ps -aq | xargs docker stop 2>/dev/null || true
+    docker ps -aq | xargs docker rm 2>/dev/null || true
+    docker images -q | xargs docker rmi 2>/dev/null || true
     docker volume prune -f
     docker network prune -f
     echo "✔ Docker nuked"

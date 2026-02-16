@@ -346,14 +346,14 @@ export ZSH="$HOME/.oh-my-zsh"
 autoload -Uz compinit
 compinit -C
 
-# Load Antidote plugin manager
-source "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
+# Load Antidote plugin manager (if installed)
+if [[ -f "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh" ]]; then
+  source "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
+  antidote load
+fi
 
-# Load plugins via Antidote
-antidote load
-
-# Initialize Oh My Zsh runtime
-source "$ZSH/oh-my-zsh.sh"
+# Initialize Oh My Zsh runtime (if installed)
+[[ -f "$ZSH/oh-my-zsh.sh" ]] && source "$ZSH/oh-my-zsh.sh"
 
 # Source all zsh configs AFTER OMZ so custom aliases take precedence
 for f in "$HOME"/.shell/zsh/*.zsh; do

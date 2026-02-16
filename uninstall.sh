@@ -319,6 +319,10 @@ if [[ "${UNINSTALL_FZF_CONFIG:-$UNINSTALL_SHELL_CONFIG}" == true ]]; then
   remove_if_exists "$HOME/.fzf.bash" || true
 fi
 
+if [[ "${UNINSTALL_ZELLIJ_CONFIG:-$UNINSTALL_SHELL_CONFIG}" == true ]]; then
+  remove_if_exists "$HOME/.shell/zellij" || true
+fi
+
 # ============================================================
 # UNINSTALL PACKAGES
 # ============================================================
