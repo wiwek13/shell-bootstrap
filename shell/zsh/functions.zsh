@@ -39,6 +39,188 @@ aws-unassume() {
 }
 
 # ============================================================
+# GITHUB ACCOUNT SWITCHING
+# ============================================================
+
+GITHUB_ACCOUNTS_CONFIG="${GITHUB_ACCOUNTS_CONFIG:-$HOME/.config/github-accounts.conf}"
+
+# Parse GitHub accounts from config file
+_gh_accounts_list() {
+  [[ ! -f "$GITHUB_ACCOUNTS_CONFIG" ]] && return 1
+  grep -v '^#' "$GITHUB_ACCOUNTS_CONFIG" | grep -v '^$'
+}
+
+# Get account details by name
+_gh_account_get() {
+  local account="$1"
+  _gh_accounts_list | grep "^$account|"
+}
+
+# Switch GitHub account (with fzf menu if no arg)
+gh-switch() {
+  local account="$1"
+  local scope="${2:-global}"  # global or local
+  
+  # Interactive selection if no account specified
+  if [[ -z "$account" ]]; then
+    if ! command -v fzf &> /dev/null; then
+      echo "❌ fzf not installed. Usage: gh-switch <account> [global|local]"
+      echo "Available accounts:"
+      _gh_accounts_list | cut -d'|' -f1 | sed 's/^/  - /'
+      return 1
+    fi
+    account=$(_gh_accounts_list | fzf --height 40% --reverse --prompt="GitHub Account: " | cut -d'|' -f1)
+    [[ -z "$account" ]] && return 1
+  fi
+  
+  # Get account details
+  local account_data=$(_gh_account_get "$account")
+  if [[ -z "$account_data" ]]; then
+    echo "❌ Account '$account' not found in $GITHUB_ACCOUNTS_CONFIG"
+    return 1
+  fi
+  
+  local git_name=$(echo "$account_data" | cut -d'|' -f2)
+  local git_email=$(echo "$account_data" | cut -d'|' -f3)
+  local ssh_host=$(echo "$account_data" | cut -d'|' -f4)
+  
+  # Set git config
+  if [[ "$scope" == "local" ]]; then
+    if ! git rev-parse --git-dir &>/dev/null; then
+      echo "❌ Not in a git repository"
+      return 1
+    fi
+    git config user.name "$git_name"
+    git config user.email "$git_email"
+    echo "✔ Switched to $account (local repository only)"
+  else
+    git config --global user.name "$git_name"
+    git config --global user.email "$git_email"
+    echo "✔ Switched to $account (global)"
+  fi
+  
+  echo "  Name:  $git_name"
+  echo "  Email: $git_email"
+  echo "  SSH:   $ssh_host"
+}
+
+# Quick aliases for specific accounts
+gh-wiwek() {
+  gh-switch wiwek13 "$@"
+}
+
+gh-nc() {
+  gh-switch vivekkushwah-nc "$@"
+}
+
+# Show current GitHub account
+gh-whoami() {
+  echo "Current Git Configuration:"
+  
+  # Check local config first
+  if git rev-parse --git-dir &>/dev/null; then
+    local local_name=$(git config --local user.name 2>/dev/null)
+    local local_email=$(git config --local user.email 2>/dev/null)
+    if [[ -n "$local_name" ]]; then
+      echo "  [Local]  $local_name <$local_email>"
+    fi
+  fi
+  
+  # Show global config
+  local global_name=$(git config --global user.name)
+  local global_email=$(git config --global user.email)
+  echo "  [Global] $global_name <$global_email>"
+  
+  # Test SSH authentication
+  echo ""
+  echo "SSH Authentication Test:"
+  local ssh_test=$(ssh -T git@github.com 2>&1)
+  if echo "$ssh_test" | grep -q "successfully authenticated"; then
+    echo "  ✔ $(echo "$ssh_test" | grep 'Hi')"
+  else
+    echo "  ❌ Authentication failed"
+  fi
+}
+
+# Update remote URL for current repo
+gh-remote() {
+  if ! git rev-parse --git-dir &>/dev/null; then
+    echo "❌ Not in a git repository"
+    return 1
+  fi
+  
+  local account="$1"
+  
+  # Interactive selection if no account specified
+  if [[ -z "$account" ]]; then
+    if command -v fzf &> /dev/null; then
+      account=$(_gh_accounts_list | fzf --height 40% --reverse --prompt="GitHub Account: " | cut -d'|' -f1)
+      [[ -z "$account" ]] && return 1
+    else
+      echo "Usage: gh-remote <account>"
+      return 1
+    fi
+  fi
+  
+  # Get account SSH host
+  local account_data=$(_gh_account_get "$account")
+  if [[ -z "$account_data" ]]; then
+    echo "❌ Account '$account' not found"
+    return 1
+  fi
+  
+  local ssh_host=$(echo "$account_data" | cut -d'|' -f4)
+  
+  # Get current remote URL
+  local current_url=$(git remote get-url origin 2>/dev/null)
+  if [[ -z "$current_url" ]]; then
+    echo "❌ No 'origin' remote found"
+    return 1
+  fi
+  
+  # Extract repo path
+  local repo_path=$(echo "$current_url" | sed -E 's|.*github[^:]*[:/](.+)$|\1|')
+  local new_url="git@${ssh_host}:${repo_path}"
+  
+  git remote set-url origin "$new_url"
+  echo "✔ Remote updated for $account"
+  echo "  $new_url"
+}
+
+# List all configured GitHub accounts
+gh-accounts() {
+  if [[ ! -f "$GITHUB_ACCOUNTS_CONFIG" ]]; then
+    echo "❌ Config file not found: $GITHUB_ACCOUNTS_CONFIG"
+    return 1
+  fi
+  
+  echo "Configured GitHub Accounts:"
+  echo ""
+  
+  while IFS='|' read -r account git_name git_email ssh_host ssh_key; do
+    [[ "$account" =~ ^#.*$ ]] && continue
+    [[ -z "$account" ]] && continue
+    
+    echo "  📦 $account"
+    echo "     Name:    $git_name"
+    echo "     Email:   $git_email"
+    echo "     SSH:     $ssh_host (~/.ssh/$ssh_key)"
+    echo ""
+  done < "$GITHUB_ACCOUNTS_CONFIG"
+  
+  echo "Commands:"
+  echo "  gh-switch [account]    - Switch account (global or use 'local' flag)"
+  echo "  gh-whoami              - Show current account"
+  echo "  gh-remote [account]    - Update repo remote for account"
+  echo "  gh-accounts            - List all accounts"
+}
+
+# Edit GitHub accounts config
+gh-config() {
+  ${EDITOR:-nano} "$GITHUB_ACCOUNTS_CONFIG"
+}
+
+# ============================================================
 # KUBERNETES
 # ============================================================
 
