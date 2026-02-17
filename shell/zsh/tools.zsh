@@ -45,3 +45,57 @@ fi
 if command -v helm &> /dev/null; then
   source <(helm completion zsh)
 fi
+
+# gcloud - Google Cloud SDK (installed via cask)
+if [[ -d "$(brew --prefix 2>/dev/null)/share/google-cloud-sdk" ]]; then
+  export PATH="$(brew --prefix)/share/google-cloud-sdk/bin:$PATH"
+  source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
+  source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+fi
+
+# oci - Oracle Cloud Infrastructure CLI completion
+if command -v oci &> /dev/null; then
+  eval "$(oci setup autocomplete 2>/dev/null || true)"
+fi
+
+# argocd completion
+if command -v argocd &> /dev/null; then
+  source <(argocd completion zsh)
+fi
+
+# terraform completion
+if command -v terraform &> /dev/null; then
+  autoload -U +X bashcompinit && bashcompinit
+  complete -o nospace -C terraform terraform
+fi
+
+# aws completion
+if command -v aws_completer &> /dev/null; then
+  autoload -U +X bashcompinit 2>/dev/null
+  complete -C aws_completer aws
+fi
+
+# gh (GitHub CLI) completion
+if command -v gh &> /dev/null; then
+  source <(gh completion -s zsh)
+fi
+
+# kustomize completion
+if command -v kustomize &> /dev/null; then
+  source <(kustomize completion zsh)
+fi
+
+# helmfile completion
+if command -v helmfile &> /dev/null; then
+  source <(helmfile completion zsh 2>/dev/null || true)
+fi
+
+# trivy completion
+if command -v trivy &> /dev/null; then
+  source <(trivy completion zsh 2>/dev/null || true)
+fi
+
+# git-delta (use as default git pager)
+if command -v delta &> /dev/null; then
+  export GIT_PAGER="delta"
+fi
