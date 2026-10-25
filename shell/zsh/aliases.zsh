@@ -43,6 +43,7 @@ alias free='top -l 1 | head -n 10'
 # GIT (extends OMZ git plugin)
 # ============================================================
 alias g='git'
+alias lg='lazygit'
 alias gs='git status --short --branch'
 alias gss='git status'
 alias gp='git push'
@@ -179,6 +180,7 @@ alias kapi='kubectl api-resources'
 # DOCKER
 # ============================================================
 alias d='docker'
+alias ld='lazydocker'
 alias dps='docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
 alias dpsa='docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"'
 alias di='docker images'
@@ -358,6 +360,7 @@ alias ep='${EDITOR:-nano} ~/.shell/zsh/plugins.list'
 alias et='${EDITOR:-nano} ~/.shell/zsh/tools.zsh && source ~/.zshrc'
 alias es='${EDITOR:-nano} ~/.shell/starship/starship.toml'
 alias ez='${EDITOR:-nano} ~/.shell/zellij/config.kdl'
+alias ew='${EDITOR:-nano} ~/.warp/settings.toml'
 
 # ============================================================
 # SHELL CONFIG AGENT

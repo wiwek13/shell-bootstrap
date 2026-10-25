@@ -117,6 +117,7 @@ EXISTING_FILES=()
 [[ -f "$HOME/.zprofile" ]] && EXISTING_FILES+=("$HOME/.zprofile")
 [[ -d "$HOME/.shell" ]] && EXISTING_FILES+=("$HOME/.shell/")
 [[ -f "$HOME/.zsh_plugins.txt" ]] && EXISTING_FILES+=("$HOME/.zsh_plugins.txt")
+[[ -d "$HOME/.warp" ]] && EXISTING_FILES+=("$HOME/.warp/")
 
 if [[ ${#EXISTING_FILES[@]} -gt 0 ]]; then
   echo ""
@@ -147,6 +148,7 @@ if [[ ${#EXISTING_FILES[@]} -gt 0 ]]; then
   backup_if_exists "$HOME/.zprofile"
   backup_if_exists "$HOME/.shell"
   backup_if_exists "$HOME/.zsh_plugins.txt"
+  backup_if_exists "$HOME/.warp"
   echo "  ✔ Backups saved to: $BACKUP_DIR"
 fi
 
@@ -308,6 +310,13 @@ if [[ "$INSTALL_ZELLIJ_CONFIG" == true ]]; then
   cp -v "$SCRIPT_DIR/shell/zellij/config.kdl" ~/.shell/zellij/
 fi
 
+if [[ "${INSTALL_WARP_CONFIG:-true}" == true && -d "$SCRIPT_DIR/shell/warp" ]]; then
+  mkdir -p ~/.warp/tab_configs
+  cp -v "$SCRIPT_DIR/shell/warp/settings.toml" ~/.warp/settings.toml
+  cp -v "$SCRIPT_DIR/shell/warp/tab_configs"/* ~/.warp/tab_configs/ 2>/dev/null || true
+  echo "  ✔ Warp configuration copied to ~/.warp/"
+fi
+
 # ============================================================
 # SYMLINKS
 # ============================================================
@@ -320,10 +329,13 @@ if [[ "$INSTALL_ANTIDOTE" == true ]]; then
   echo "  ✔ ~/.zsh_plugins.txt -> ~/.shell/zsh/plugins.list"
 fi
 
-# Starship config (XDG compatibility)
+# Starship config (XDG compatibility: standard ~/.config/starship.toml)
 if [[ "$INSTALL_STARSHIP_CONFIG" == true ]]; then
+  mkdir -p ~/.config
+  ln -sf ~/.shell/starship/starship.toml ~/.config/starship.toml
+  mkdir -p ~/.config/starship
   ln -sf ~/.shell/starship/starship.toml ~/.config/starship/starship.toml
-  echo "  ✔ ~/.config/starship/starship.toml -> ~/.shell/starship/starship.toml"
+  echo "  ✔ ~/.config/starship.toml -> ~/.shell/starship/starship.toml"
 fi
 
 # ============================================================
@@ -347,15 +359,17 @@ autoload -Uz compinit
 compinit -C
 
 # Load Antidote plugin manager (if installed)
-if [[ -f "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh" ]]; then
-  source "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
+ANTIDOTE_DIR="${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote"
+[[ ! -d "$ANTIDOTE_DIR" && -d "/usr/local/opt/antidote/share/antidote" ]] && ANTIDOTE_DIR="/usr/local/opt/antidote/share/antidote"
+if [[ -f "$ANTIDOTE_DIR/antidote.zsh" ]]; then
+  source "$ANTIDOTE_DIR/antidote.zsh"
   antidote load
+elif [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
+  # Fallback to standard Oh My Zsh if Antidote is not present
+  source "$ZSH/oh-my-zsh.sh"
 fi
 
-# Initialize Oh My Zsh runtime (if installed)
-[[ -f "$ZSH/oh-my-zsh.sh" ]] && source "$ZSH/oh-my-zsh.sh"
-
-# Source all zsh configs AFTER OMZ so custom aliases take precedence
+# Source all zsh configs AFTER plugin loading so custom aliases take precedence
 for f in "$HOME"/.shell/zsh/*.zsh; do
   source "$f"
 done

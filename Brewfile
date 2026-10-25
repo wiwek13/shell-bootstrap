@@ -1,176 +1,131 @@
 # ============================================================
 # 📦 SHELL BOOTSTRAP APPLICATIONS MANIFEST (BREWFILE)
 # ============================================================
-# This file defines the Homebrew formulae, casks, and taps to be installed.
-# The bootstrap script installs these using `brew bundle`.
-#
-# 📝 INSTRUCTIONS:
-# 1. ADD packages: One per line.
-#    - Formula:  brew "package" (e.g., brew "wget")
-#    - Cask:     cask "package" (e.g., cask "google-chrome")
-#    - Tap:      tap "user/repo" (e.g., tap "hashicorp/tap")
-# 2. DISABLE packages: Comment out the line with # (e.g., # cask "spotify")
-# 3. SEARCH: Use `brew search <query>` to find names.
-#
-# 💡 TIP: Lines starting with # are ignored.
+# Mirror of the actual configuration & backup setup for macOS
+# Install all packages using: brew bundle --file=Brewfile
 # ============================================================
 
 # ============================================================
-# 🚀 LANGUAGES & RUNTIMES
+# 🚰 TAPS
 # ============================================================
-brew "node"                          # Node.js runtime
-brew "nvm"                           # (Formula) Node version manager
+tap "hashicorp/tap"                  # HashiCorp official tools
+tap "warrensbox/tap"                 # tfswitch tap
+tap "mistertea/et"                   # Eternal Terminal tap
+tap "abue-ammar/tinycast"            # Tinycast tap
+
+# ============================================================
+# 🚀 LANGUAGES, RUNTIMES & PACKAGE MANAGERS
+# ============================================================
+brew "node"                          # Node.js JavaScript runtime
+brew "nvm"                           # Node Version Manager
 brew "python"                        # Python 3
 brew "pyenv"                         # Python version manager
-tap "oven-sh/bun"                    # Bun runtime tap
-brew "oven-sh/bun/bun"               # Bun JS runtime (required for oh-my-opencode)
+brew "uv"                            # Ultra-fast Python package & project manager
 
 # ============================================================
-# 🛠️ CLI CORE & HISTORY
+# 🐚 SHELL CORE & PROMPT
 # ============================================================
-brew "curl"                          # HTTP client
-brew "wget"                          # File downloader
-brew "jq"                            # JSON processor
-brew "tlrc"                          # Simplified man pages (tldr client)
-brew "atuin"                         # Shell history sync
-brew "direnv"                        # Auto-load .envrc files
-brew "fastfetch"                     # System info display
-brew "pre-commit"                    # Git hooks manager
+brew "antidote"                      # Fast zsh plugin manager
+brew "starship"                      # Cross-shell prompt with rich Nerd Font icons
+brew "zellij"                        # Modern terminal workspace & multiplexer
+brew "atuin"                         # Magical shell history with SQLite & sync
+brew "zoxide"                        # Smarter cd command with frecency
+brew "direnv"                        # Per-directory environment variable manager
+
+# ============================================================
+# 🛠️ CLI ESSENTIALS & MODERN REPLACEMENTS
+# ============================================================
+brew "bat"                           # Cat clone with syntax highlighting and git integration
+brew "eza"                           # Modern, feature-rich replacement for ls
+brew "fd"                            # Simple, fast, and user-friendly alternative to find
+brew "ripgrep"                       # Blazingly fast grep replacement
+brew "the_silver_searcher"           # Code searching tool (ag)
+brew "fzf"                           # Command-line fuzzy finder
+brew "jq"                            # Lightweight and flexible command-line JSON processor
+brew "yq"                            # Portable command-line YAML, JSON, XML processor
+brew "tlrc"                          # Fast tldr client for simplified man pages
+brew "tree"                          # Recursive directory listing program
+brew "watch"                         # Execute a program periodically
+brew "fastfetch"                     # Fast, customizable system information tool
+brew "curl"                          # Command line tool for transferring data with URLs
+brew "wget"                          # Internet file retriever
 
 # ============================================================
 # 🔄 GIT & VERSION CONTROL
 # ============================================================
-brew "gh"                            # GitHub CLI
-brew "lazygit"                       # Git TUI
-brew "git-delta"                     # Better git diff viewer
-tap "anomalyco/tap"           # OpenCode tap
-brew "anomalyco/tap/opencode"        # AI terminal coding assistant
+brew "gh"                            # GitHub official command line tool
+brew "lazygit"                       # Simple terminal UI for git commands
+brew "git-delta"                     # Syntax-highlighting pager for git, diff, and grep
+brew "pre-commit"                    # Framework for managing git pre-commit hooks
 
 # ============================================================
-# ☁️ INFRASTRUCTURE AS CODE (Terraform/AWS)
+# ☁️ CLOUD & INFRASTRUCTURE AS CODE (IaC)
 # ============================================================
-brew "awscli"                        # AWS CLI v2
-cask "gcloud-cli"                    # Google Cloud SDK (gcloud CLI)
+brew "awscli"                        # Universal Command Line Interface for Amazon Web Services
+cask "gcloud-cli"                    # Google Cloud SDK & command-line tools
 brew "oci-cli"                       # Oracle Cloud Infrastructure CLI
-tap "hashicorp/tap"           # HashiCorp official tap
-brew "hashicorp/tap/terraform"       # Terraform from official tap
-tap "warrensbox/tap"                 # tfswitch tap
-brew "warrensbox/tap/tfswitch"       # Terraform version switcher
+brew "hashicorp/tap/terraform"       # Terraform IaC tool from official HashiCorp tap
+cask "warrensbox/tap/tfswitch"       # Terraform version switcher
 
 # ============================================================
-# ☸️ KUBERNETES ECOSYSTEM
+# ☸️ KUBERNETES & CONTAINERS (Platform / DevOps / SRE)
 # ============================================================
-brew "kubernetes-cli"                # kubectl
-brew "kubectl-ai"                    # AI-powered kubectl
+brew "kubernetes-cli"                # Kubernetes command-line interface (kubectl)
+brew "kubectl-ai"                    # AI assistant plugin for Kubernetes kubectl
+brew "kubectx"                       # Fast Kubernetes context and namespace switcher
+brew "k9s"                           # Kubernetes CLI management dashboard TUI
+brew "stern"                         # Multi-pod and multi-container log tailing
 brew "helm"                          # Kubernetes package manager
-brew "helmfile"                      # Helm chart management
-brew "kustomize"                     # Kubernetes config customization
-brew "argocd"                        # GitOps CLI
-# cask "lens"                   # Kubernetes IDE (temporarily disabled - download issue)
+brew "helmfile"                      # Declarative spec for deploying Helm charts
+brew "kustomize"                     # Template-free customization of Kubernetes YAML
+brew "argocd"                        # Declarative GitOps continuous delivery tool for Kubernetes
+brew "dive"                          # Tool for exploring Docker image layers & contents
+brew "trivy"                         # Comprehensive security & vulnerability scanner for containers/IaC
+cask "orbstack"                      # Ultra-fast, lightweight Docker Desktop and Linux VM alternative
 
 # ============================================================
-# 🐳 DOCKER & CONTAINERS
+# 🔌 NETWORKING & REMOTE ACCESS
 # ============================================================
-cask "orbstack"               # Docker/Linux VM (lightweight)
-brew "dive"                          # Docker image layer explorer
-brew "trivy"                         # Container security scanner
+brew "httpie"                        # User-friendly HTTP client for APIs
+brew "grpcurl"                       # Command-line tool for interacting with gRPC servers
+brew "mistertea/et/et"               # Eternal Terminal (re-connectable remote shell)
 
 # ============================================================
-# 🔌 NETWORK & API TOOLS
+# 📊 SYSTEM MONITORING & DISK UTILITIES
 # ============================================================
-brew "httpie"                        # Better HTTP client
-brew "grpcurl"                       # gRPC debugging
-# cask "postman"                # API testing
+brew "btop"                          # Resource monitor with beautiful UI and graphs
+brew "htop"                          # Interactive process viewer
+brew "procs"                         # Modern replacement for ps with color and tree view
+brew "ncdu"                          # NCurses disk usage analyzer
+brew "dust"                          # More intuitive du (disk usage) in Rust
+brew "duf"                           # Modern Disk Usage/Free utility
+brew "mole"                          # Deep Mac cleaner and optimizer
+cask "stats"                         # Comprehensive macOS menu bar system monitor
+cask "vorssaint"                     # Menu bar toolkit (keep-awake, system monitor, volume)
 
 # ============================================================
-# 📊 SYSTEM MONITORING
+# 🔨 BUILD TOOLS & COMPILERS
 # ============================================================
-brew "btop"                          # Beautiful system monitor
-brew "ncdu"                          # Disk usage analyzer (TUI)
-brew "dust"                          # Modern du (disk usage)
-brew "duf"                           # Modern df (disk free)
-brew "procs"                         # Modern ps replacement
-cask "stats"                  # Menu bar system monitor
+brew "cmake"                         # Cross-platform build generator
+brew "automake"                      # Tool for generating GNU Standards-compliant Makefiles
+brew "libtool"                       # Generic library support script
 
 # ============================================================
-# 🖥️ TERMINAL EMULATORS
+# 🖥️ TERMINAL EMULATORS & FONTS
 # ============================================================
-cask "warp"                   # Modern AI terminal
-# cask "amazon-q"               # Terminal autocomplete (temporarily disabled - download issue)
+cask "warp"                          # Modern AI-first terminal emulator
+cask "ghostty"                       # Fast, native GPU-accelerated terminal by Mitchell Hashimoto
+cask "font-jetbrains-mono-nerd-font" # Developer font patched with high-resolution Nerd Font icons
 
 # ============================================================
-# 📝 CODE EDITORS
+# 🤖 AI & DEVELOPER PRODUCTIVITY
 # ============================================================
-cask "antigravity"            # AI coding assistant
-# cask "sublime-text"           # Fast text editor
+cask "antigravity-cli"               # Google Antigravity (AGY) agentic coding platform
 
 # ============================================================
-# 🌐 WEB BROWSERS
+# 🌐 WEB BROWSERS & PRODUCTIVITY CASKS
 # ============================================================
-cask "vivaldi"                # Vivaldi browser
-cask "google-chrome"          # Google Chrome
-
-# ============================================================
-# ⚡ PRODUCTIVITY & UTILITIES
-# ============================================================
-cask "maccy"                  # Clipboard manager
-cask "raycast"                # Spotlight replacement (Highly Recommended)
-# cask "rectangle"              # Window management
-# cask "hiddenbar"              # Menu bar organizer
-# cask "appcleaner"             # Clean app uninstaller
-cask "obsidian"               # Note-taking (Markdown)
-# cask "notion"                 # Docs & wikis
-
-# ============================================================
-# 💾 DATABASE MANAGEMENT
-# ============================================================
-cask "dbeaver-community"      # Database client
-# cask "tableplus"              # Database GUI
-
-# ============================================================
-# 🔐 SECURITY & PASSWORDS
-# ============================================================
-cask "bitwarden"              # Password manager
-# cask "protonvpn"              # Free VPN
-
-# ============================================================
-# 💬 COMMUNICATION
-# ============================================================
-cask "ayugram"                # Telegram client
-cask "slack"                  # Team communication
-# cask "discord"                # Gaming/community chat
-# cask "zoom"                   # Video conferencing
-
-# ============================================================
-# 📥 DOWNLOAD MANAGERS
-# ============================================================
-tap "amir1376/tap"            # AB Download Manager tap
-cask "ab-download-manager"    # AB Download Manager
-# cask "free-download-manager"  # Download manager (FDM)
-# cask "qbittorrent"            # Torrent client
-
-# ============================================================
-# 🎬 MEDIA & PLAYERS
-# ============================================================
-cask "vlc"                    # Media player
-# cask "iina"                   # Modern video player
-# cask "spotify"                # Music streaming
-
-# ============================================================
-# 🗜️ ARCHIVE UTILITIES
-# ============================================================
-cask "keka"                   # Archive utility
-
-# ============================================================
-# 🐹 SYSTEM OPTIMIZATION (Mole)
-# ============================================================
-# Mole - All-in-one Mac cleanup & optimization tool
-# Features: Deep cleaning, smart uninstaller, disk analyzer, live monitoring
-# After install, run these commands:
-#   mo touchid      # Enable Touch ID for sudo (HIGHLY RECOMMENDED)
-#   mo completion   # Setup shell tab completion
-#   mo status       # Live system health dashboard
-#   mo clean        # Deep cleanup (use --dry-run first!)
-#   mo analyze      # Visual disk explorer
-brew "mole"                   # Deep clean and optimize your Mac
-
+cask "google-chrome"                 # Google Chrome web browser
+cask "vivaldi"                       # Vivaldi power-user web browser
+cask "dbeaver-community"             # Universal database GUI tool
+cask "keka"                          # File archiver and extractor for macOS

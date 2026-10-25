@@ -49,6 +49,7 @@ INSTALL_ET=true             # Eternal Terminal (persistent SSH)
 INSTALL_ZSH_CONFIG=true     # Shell exports, aliases, functions
 INSTALL_STARSHIP_CONFIG=true # Starship prompt theme
 INSTALL_ZELLIJ_CONFIG=true  # Zellij terminal config
+INSTALL_WARP_CONFIG=true    # Warp terminal configuration and theme mirroring
 
 # ============================================================
 # OPTIONAL: NERD FONT
@@ -76,11 +77,11 @@ INSTALL_MOLE_LAUNCHERS=false
 # ============================================================
 # Set to true to install OpenCode (AI terminal coding agent)
 # Already in Brewfile, this is for explicit control
-INSTALL_OPENCODE=true
+INSTALL_OPENCODE=false
 
 # Set to true to install Oh My OpenCode (multi-agent extension)
 # Runs: npx oh-my-opencode install --no-tui
-INSTALL_OH_MY_OPENCODE=true
+INSTALL_OH_MY_OPENCODE=false
 
 # ============================================================
 # BACKUP MANAGEMENT

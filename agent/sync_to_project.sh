@@ -105,6 +105,26 @@ if [[ "$SYNC_SHELL" == true ]]; then
     fi
   done
   
+  # Compare Warp config
+  WARP_DIR="$HOME/.warp"
+  PROJECT_WARP_DIR="$PROJECT_SHELL_DIR/warp"
+  if [[ -d "$WARP_DIR" ]]; then
+    if [[ -f "$WARP_DIR/settings.toml" ]]; then
+      if [[ -f "$PROJECT_WARP_DIR/settings.toml" ]]; then
+        if ! diff -q "$WARP_DIR/settings.toml" "$PROJECT_WARP_DIR/settings.toml" &>/dev/null; then
+          CHANGES_FOUND=true
+          echo -e "${CYAN}  Modified: shell/warp/settings.toml${NC}"
+          if [[ "$DRY_RUN" == true ]]; then
+            diff -u "$PROJECT_WARP_DIR/settings.toml" "$WARP_DIR/settings.toml" | head -30 || true
+          fi
+        fi
+      else
+        CHANGES_FOUND=true
+        echo -e "${GREEN}  New: shell/warp/settings.toml${NC}"
+      fi
+    fi
+  fi
+
   if [[ "$CHANGES_FOUND" == false ]]; then
     echo -e "  ${GREEN}✔ Shell configs are in sync${NC}"
   elif [[ "$DRY_RUN" != true ]]; then
@@ -121,6 +141,13 @@ if [[ "$SYNC_SHELL" == true ]]; then
         done
       fi
     done
+
+    # Sync Warp
+    if [[ -d "$WARP_DIR" ]]; then
+      mkdir -p "$PROJECT_WARP_DIR/tab_configs"
+      [[ -f "$WARP_DIR/settings.toml" ]] && cp "$WARP_DIR/settings.toml" "$PROJECT_WARP_DIR/settings.toml"
+      cp -r "$WARP_DIR/tab_configs"/* "$PROJECT_WARP_DIR/tab_configs/" 2>/dev/null || true
+    fi
     
     echo -e "  ${GREEN}✔ Shell configs synced to project${NC}"
   fi
@@ -136,14 +163,14 @@ if [[ "$SYNC_BREWFILE" == true ]]; then
   
   BREWFILE="$PROJECT_ROOT/Brewfile"
   
-  # Get currently installed packages
-  INSTALLED_FORMULAE=$(brew list --formula 2>/dev/null | sort)
+  # Get currently installed packages (top-level formulae via brew leaves)
+  INSTALLED_FORMULAE=$(brew leaves 2>/dev/null | sed 's|.*/||' | sort)
   INSTALLED_CASKS=$(brew list --cask 2>/dev/null | sort)
   INSTALLED_TAPS=$(brew tap 2>/dev/null | sort)
   
   # Extract packages from Brewfile
   BREWFILE_FORMULAE=$(grep -E '^brew "' "$BREWFILE" 2>/dev/null | sed 's/brew "\([^"]*\)".*/\1/' | sed 's|.*/||' | sort)
-  BREWFILE_CASKS=$(grep -E '^cask "' "$BREWFILE" 2>/dev/null | sed 's/cask "\([^"]*\)".*/\1/' | sort)
+  BREWFILE_CASKS=$(grep -E '^cask "' "$BREWFILE" 2>/dev/null | sed 's/cask "\([^"]*\)".*/\1/' | sed 's|.*/||' | sort)
   BREWFILE_TAPS=$(grep -E '^tap "' "$BREWFILE" 2>/dev/null | sed 's/tap "\([^"]*\)".*/\1/' | sort)
   
   # Find new packages

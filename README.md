@@ -22,13 +22,15 @@
 
 | Feature | Description |
 |---------|-------------|
-| 🎨 **Starship Prompt** | Beautiful prompt with Git, K8s, AWS, Docker status |
-| ⚡ **200+ Aliases** | Shortcuts for Git, kubectl, Terraform, Docker |
-| 🔌 **Smart Plugins** | fzf-tab, autosuggestions, syntax highlighting |
-| 📦 **50+ DevOps Tools** | k9s, stern, helm, argocd, trivy, and more |
-| 🤖 **Shell Agent** ⚠️ | AI config optimizer (experimental) - history, best practices |
+| 🎨 **Starship Prompt** | Ultra-iconic prompt with Apple logo, Git metrics, K8s, AWS, GCP, Azure, Terraform |
+| 🖥️ **Warp Terminal** | Mirrored Warp settings (`~/.warp`), themes, font settings, and PS1 integration |
+| ⚡ **200+ Aliases** | Shortcuts for Git, kubectl, Terraform, Docker, Lazygit, Lazydocker |
+| 🔌 **Smart Plugins** | fzf-tab (with rich previews), forgit, autopair, autosuggestions, fast syntax highlighting |
+| 📦 **50+ DevOps Tools** | k9s, stern, helm, argocd, trivy, atuin, uv, orbstack, and more |
+| 🚀 **Blazing Fast Startup** | Lazy NVM loading and cached completions (~0.2s shell spawn) |
+| 🤖 **Agentic Superpowers** | Integrated obra/superpowers (15 critical-thinking skills) & Agent Reach |
 | 🛠️ **Configurable** | Toggle any package on/off via `config.sh` |
-| 🔄 **Idempotent** | Safe to re-run, auto-creates backups |
+| 🔄 **Idempotent** | Safe to re-run, auto-creates backups of ~/.zshrc, ~/.shell, ~/.warp |
 
 
 ---
@@ -258,6 +260,9 @@ shell-bootstrap/
     │   └── plugins.list     # Antidote plugins
     ├── starship/
     │   └── starship.toml    # Prompt config
+    ├── warp/
+    │   ├── settings.toml    # Warp preferences & theme
+    │   └── tab_configs/     # Startup tabs & panes
     └── zellij/
         └── config.kdl       # Multiplexer config
 ```

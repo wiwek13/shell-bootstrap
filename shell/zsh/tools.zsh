@@ -1,5 +1,5 @@
 # Starship prompt
-if command -v starship &> /dev/null; then
+if [[ "$TERM" != "dumb" ]] && command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
 
@@ -8,6 +8,9 @@ export ZELLIJ_CONFIG_DIR="$HOME/.shell/zellij"
 
 # Eternal Terminal
 export ET_NO_AUTO_UPDATE=1
+
+# Homebrew prefix resolution helper (avoids repeated slow `brew --prefix` subprocesses)
+BREW_PREFIX="${HOMEBREW_PREFIX:-$(brew --prefix 2>/dev/null)}"
 
 # z - directory jumping
 if command -v zoxide &> /dev/null; then
@@ -19,80 +22,86 @@ if command -v direnv &> /dev/null; then
   eval "$(direnv hook zsh)"
 fi
 
-# atuin - shell history sync
+# atuin - shell history sync (SQLite-backed, magical search)
 if command -v atuin &> /dev/null; then
   eval "$(atuin init zsh)"
 fi
 
-# nvm - Node version manager
+# uv - fast python package manager completions
+if command -v uv &> /dev/null; then
+  eval "$(uv generate-shell-completion zsh 2>/dev/null)"
+fi
+
+# nvm - Node version manager (Lazy-loaded for instant shell startup)
 export NVM_DIR="$HOME/.nvm"
-if [[ -s "$(brew --prefix 2>/dev/null)/opt/nvm/nvm.sh" ]]; then
-  source "$(brew --prefix)/opt/nvm/nvm.sh"
-  source "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
+if [[ -n "$BREW_PREFIX" && -s "$BREW_PREFIX/opt/nvm/nvm.sh" ]]; then
+  _load_nvm() {
+    unset -f nvm node npm npx yarn 2>/dev/null
+    source "$BREW_PREFIX/opt/nvm/nvm.sh"
+    [[ -s "$BREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ]] && source "$BREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
+  }
+  nvm() { _load_nvm; nvm "$@"; }
+  node() { _load_nvm; node "$@"; }
+  npm() { _load_nvm; npm "$@"; }
+  npx() { _load_nvm; npx "$@"; }
+  yarn() { _load_nvm; yarn "$@"; }
 fi
 
 # pyenv - Python version manager
 if command -v pyenv &> /dev/null; then
-  eval "$(pyenv init -)"
+  eval "$(pyenv init --no-rehash - 2>/dev/null)"
 fi
 
-# kubectl completion
-if command -v kubectl &> /dev/null; then
-  source <(kubectl completion zsh)
-fi
+# ============================================================
+# CLOUD & DEVOPS COMPLETIONS (with High-Speed Caching)
+# ============================================================
+ZSH_COMPLETION_CACHE="$HOME/.shell/zsh/cache/completions"
+[[ ! -d "$ZSH_COMPLETION_CACHE" ]] && mkdir -p "$ZSH_COMPLETION_CACHE"
+fpath=("$ZSH_COMPLETION_CACHE" $fpath)
 
-# helm completion
-if command -v helm &> /dev/null; then
-  source <(helm completion zsh)
-fi
+_load_or_cache_completion() {
+  local cmd="$1"
+  local comp_file="$ZSH_COMPLETION_CACHE/_$cmd"
+  shift
+  if command -v "$cmd" &>/dev/null; then
+    if [[ ! -s "$comp_file" ]]; then
+      "$@" > "$comp_file" 2>/dev/null &!
+    fi
+    [[ -s "$comp_file" ]] && source "$comp_file"
+  fi
+}
+
+# Kubernetes ecosystem cached completions
+_load_or_cache_completion kubectl kubectl completion zsh
+_load_or_cache_completion helm helm completion zsh
+_load_or_cache_completion argocd argocd completion zsh
+_load_or_cache_completion gh gh completion -s zsh
+_load_or_cache_completion kustomize kustomize completion zsh
+_load_or_cache_completion helmfile helmfile completion zsh
+_load_or_cache_completion trivy trivy completion zsh
 
 # gcloud - Google Cloud SDK (installed via cask)
-if [[ -d "$(brew --prefix 2>/dev/null)/share/google-cloud-sdk" ]]; then
-  export PATH="$(brew --prefix)/share/google-cloud-sdk/bin:$PATH"
-  source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-  source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+if [[ -n "$BREW_PREFIX" && -d "$BREW_PREFIX/share/google-cloud-sdk" ]]; then
+  export PATH="$BREW_PREFIX/share/google-cloud-sdk/bin:$PATH"
+  source "$BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc"
+  source "$BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc"
 fi
 
 # oci - Oracle Cloud Infrastructure CLI completion
-if command -v oci &> /dev/null; then
-  eval "$(oci setup autocomplete 2>/dev/null || true)"
-fi
-
-# argocd completion
-if command -v argocd &> /dev/null; then
-  source <(argocd completion zsh)
+if [[ -f "$HOME/.oci/oci_autocomplete.sh" ]]; then
+  source "$HOME/.oci/oci_autocomplete.sh"
 fi
 
 # terraform completion
 if command -v terraform &> /dev/null; then
-  autoload -U +X bashcompinit && bashcompinit
+  autoload -U +X bashcompinit && bashcompinit 2>/dev/null
   complete -o nospace -C terraform terraform
 fi
 
 # aws completion
 if command -v aws_completer &> /dev/null; then
-  autoload -U +X bashcompinit 2>/dev/null
+  autoload -U +X bashcompinit && bashcompinit 2>/dev/null
   complete -C aws_completer aws
-fi
-
-# gh (GitHub CLI) completion
-if command -v gh &> /dev/null; then
-  source <(gh completion -s zsh)
-fi
-
-# kustomize completion
-if command -v kustomize &> /dev/null; then
-  source <(kustomize completion zsh)
-fi
-
-# helmfile completion
-if command -v helmfile &> /dev/null; then
-  source <(helmfile completion zsh 2>/dev/null || true)
-fi
-
-# trivy completion
-if command -v trivy &> /dev/null; then
-  source <(trivy completion zsh 2>/dev/null || true)
 fi
 
 # git-delta (use as default git pager)

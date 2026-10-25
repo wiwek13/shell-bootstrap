@@ -7,6 +7,9 @@ fi
 
 export PATH="$HOME/bin:$HOME/.local/bin:$HOME/.antigravity/antigravity/bin:$PATH"
 
+# Starship prompt configuration
+export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+
 # ============================================================
 # EDITOR
 # ============================================================
@@ -77,6 +80,26 @@ export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:wrap"
+
+# ============================================================
+# FZF-TAB (Interactive Completion Preview)
+# ============================================================
+zstyle ':completion:*:git-checkout:*' sort false
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath 2>/dev/null'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --icons --color=always $realpath 2>/dev/null'
+zstyle ':fzf-tab:complete:*:*' fzf-preview '[[ -f $realpath ]] && bat --style=numbers --color=always --line-range :300 $realpath 2>/dev/null || eza -1 --icons --color=always $realpath 2>/dev/null'
+zstyle ':fzf-tab:complete:(kill|killall):*' fzf-preview '[[ $group == "[process ID]" ]] && ps --pid=$word -o cmd --no-headers -w -w 2>/dev/null'
+zstyle ':fzf-tab:complete:(kill|killall):*' fzf-flags '--preview-window=down:3:wrap'
+zstyle ':fzf-tab:*' switch-group ',' '.'
+
+# ============================================================
+# FORGIT (Interactive Git with fzf & delta)
+# ============================================================
+export FORGIT_NO_ALIASES=0
+export FORGIT_FZF_DEFAULT_OPTS="--exact --border --cycle --reverse --height '75%'"
 
 # ============================================================
 # KUBERNETES

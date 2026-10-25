@@ -2,42 +2,30 @@
 getantidote/use-omz
 
 # ============================================================
-# CORE ESSENTIALS (must-have for every zsh setup)
+# CORE ESSENTIALS
 # ============================================================
 zsh-users/zsh-autosuggestions           # Fish-like suggestions as you type
 zsh-users/zsh-completions               # Additional completions for common tools
-zsh-users/zsh-history-substring-search  # Type partial command, arrow up to search
-zdharma-continuum/fast-syntax-highlighting  # Faster, better syntax highlighting
+zdharma-continuum/fast-syntax-highlighting  # Fast, accurate syntax highlighting
+hlissner/zsh-autopair                   # Auto-close quotes and brackets
 
 # ============================================================
-# PRODUCTIVITY
+# PRODUCTIVITY & INTERACTIVE TOOLS
 # ============================================================
 Aloxaf/fzf-tab                          # Replace completion menu with fzf
-MichaelAquilina/zsh-you-should-use      # Suggests aliases for commands you type
+wfxr/forgit                             # Interactive Git powered by fzf & delta
+paulirish/git-open                      # Open GitHub/GitLab repo/PR in browser
+MichaelAquilina/zsh-you-should-use      # Reminds you of existing aliases
 
 # ============================================================
-# OH MY ZSH PLUGINS (via Antidote)
+# OH MY ZSH CURATED UTILITIES
 # ============================================================
-
-# Quick commands
-ohmyzsh/ohmyzsh path:plugins/sudo       # Double-tap ESC to add sudo
-ohmyzsh/ohmyzsh path:plugins/extract    # Universal archive extractor
+ohmyzsh/ohmyzsh path:plugins/sudo       # Double-tap ESC to prepend sudo
+ohmyzsh/ohmyzsh path:plugins/extract    # Universal archive extractor (x command)
 ohmyzsh/ohmyzsh path:plugins/copypath   # Copy current directory path
 ohmyzsh/ohmyzsh path:plugins/copyfile   # Copy file contents to clipboard
-ohmyzsh/ohmyzsh path:plugins/web-search # Search from terminal (google, ddg, etc)
-
-# Git
-ohmyzsh/ohmyzsh path:plugins/git        # Comprehensive git aliases
-ohmyzsh/ohmyzsh path:plugins/gitignore  # Generate .gitignore files
-
-# DevOps
-ohmyzsh/ohmyzsh path:plugins/docker
-ohmyzsh/ohmyzsh path:plugins/docker-compose
-ohmyzsh/ohmyzsh path:plugins/kubectl
-ohmyzsh/ohmyzsh path:plugins/helm
-ohmyzsh/ohmyzsh path:plugins/terraform
-ohmyzsh/ohmyzsh path:plugins/aws
-ohmyzsh/ohmyzsh path:plugins/gcloud
-
-# macOS
-ohmyzsh/ohmyzsh path:plugins/macos      # macOS-specific commands (ofd, cdf, etc)
+ohmyzsh/ohmyzsh path:plugins/web-search # Search web from terminal
+ohmyzsh/ohmyzsh path:plugins/git        # Core git functions & completions
+ohmyzsh/ohmyzsh path:plugins/gitignore  # Generate .gitignore files via gi
+ohmyzsh/ohmyzsh path:plugins/docker     # Docker CLI completions & helpers
+ohmyzsh/ohmyzsh path:plugins/macos      # macOS commands (ofd, cdf, trash)
