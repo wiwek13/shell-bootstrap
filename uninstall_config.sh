@@ -52,6 +52,12 @@ UNINSTALL_K9S=true
 UNINSTALL_ET=true              # Eternal Terminal
 
 # ============================================================
+# APPLICATIONS
+# ============================================================
+UNINSTALL_TINYCAST=false       # Keep Tinycast launcher by default
+UNINSTALL_GHOSTTY_CONFIG=false # Keep Ghostty configuration by default
+
+# ============================================================
 # OPTIONS
 # ============================================================
 CREATE_MINIMAL_ZSHRC=true      # Create basic .zshrc after uninstall

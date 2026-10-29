@@ -71,6 +71,8 @@ cask "warrensbox/tap/tfswitch"       # Terraform version switcher
 # ☸️ KUBERNETES & CONTAINERS (Platform / DevOps / SRE)
 # ============================================================
 brew "kubernetes-cli"                # Kubernetes command-line interface (kubectl)
+brew "kubecolor"                     # Colorizes kubectl output for improved readability
+brew "kubeconform"                   # FAST, schema-validating Kubernetes manifest checker
 brew "kubectl-ai"                    # AI assistant plugin for Kubernetes kubectl
 brew "kubectx"                       # Fast Kubernetes context and namespace switcher
 brew "k9s"                           # Kubernetes CLI management dashboard TUI
@@ -82,6 +84,14 @@ brew "argocd"                        # Declarative GitOps continuous delivery to
 brew "dive"                          # Tool for exploring Docker image layers & contents
 brew "trivy"                         # Comprehensive security & vulnerability scanner for containers/IaC
 cask "orbstack"                      # Ultra-fast, lightweight Docker Desktop and Linux VM alternative
+
+# ============================================================
+# 🔐 SECURITY & SECRETS MANAGEMENT
+# ============================================================
+brew "sops"                          # Mozilla SOPS: encrypts YAML/JSON/ENV files seamlessly
+brew "age"                           # Simple, modern and secure file encryption tool
+brew "gitleaks"                      # Blazing fast scanner for secrets, API tokens and keys
+brew "trufflehog"                    # Deep credential and secret search engine
 
 # ============================================================
 # 🔌 NETWORKING & REMOTE ACCESS
@@ -109,6 +119,7 @@ cask "vorssaint"                     # Menu bar toolkit (keep-awake, system moni
 brew "cmake"                         # Cross-platform build generator
 brew "automake"                      # Tool for generating GNU Standards-compliant Makefiles
 brew "libtool"                       # Generic library support script
+brew "just"                          # Modern, handy alternative to make for project automation
 
 # ============================================================
 # 🖥️ TERMINAL EMULATORS & FONTS
@@ -120,7 +131,14 @@ cask "font-jetbrains-mono-nerd-font" # Developer font patched with high-resoluti
 # ============================================================
 # 🤖 AI & DEVELOPER PRODUCTIVITY
 # ============================================================
+brew "act"                           # Run GitHub Actions pipelines locally inside Docker
+brew "yazi"                          # Blazing-fast terminal file manager written in Rust
 cask "antigravity-cli"               # Google Antigravity (AGY) agentic coding platform
+if Hardware::CPU.arm?
+  cask "tinycast"                    # Fast, lightweight native macOS launcher & clipboard history (Apple Silicon)
+else
+  cask "tinycast-universal"          # Fast, lightweight native macOS launcher & clipboard history (Intel/Universal)
+end
 
 # ============================================================
 # 🌐 WEB BROWSERS & PRODUCTIVITY CASKS

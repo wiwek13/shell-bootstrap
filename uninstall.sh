@@ -283,6 +283,7 @@ echo ""
 [[ "$UNINSTALL_STERN" == true ]] && echo "  • stern"
 [[ "$UNINSTALL_K9S" == true ]] && echo "  • k9s"
 [[ "$UNINSTALL_ET" == true ]] && echo "  • et"
+[[ "$UNINSTALL_TINYCAST" == true ]] && echo "  • tinycast"
 [[ "$UNINSTALL_OH_MY_ZSH" == true ]] && echo "  • Oh My Zsh"
 
 echo ""
@@ -323,6 +324,11 @@ if [[ "${UNINSTALL_ZELLIJ_CONFIG:-$UNINSTALL_SHELL_CONFIG}" == true ]]; then
   remove_if_exists "$HOME/.shell/zellij" || true
 fi
 
+if [[ "${UNINSTALL_GHOSTTY_CONFIG:-false}" == true ]]; then
+  remove_if_exists "$HOME/.config/ghostty" || true
+  remove_if_exists "$HOME/.local/bin/ghostty" || true
+fi
+
 # ============================================================
 # UNINSTALL PACKAGES
 # ============================================================
@@ -347,6 +353,11 @@ echo -e "${BLUE}▶ Removing packages...${NC}"
 [[ "$UNINSTALL_STERN" == true ]] && { uninstall_brew_package "stern" || true; }
 [[ "$UNINSTALL_K9S" == true ]] && { uninstall_brew_package "k9s" || true; }
 [[ "$UNINSTALL_ET" == true ]] && { uninstall_brew_package "et" || true; }
+if [[ "$UNINSTALL_TINYCAST" == true ]]; then
+  echo -e "${BLUE}▶ Removing Tinycast...${NC}"
+  brew uninstall --cask tinycast 2>/dev/null || brew uninstall --cask tinycast-universal 2>/dev/null || true
+  remove_if_exists "/Applications/Tinycast.app" || true
+fi
 
 echo ""
 

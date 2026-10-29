@@ -49,7 +49,8 @@ INSTALL_ET=true             # Eternal Terminal (persistent SSH)
 INSTALL_ZSH_CONFIG=true     # Shell exports, aliases, functions
 INSTALL_STARSHIP_CONFIG=true # Starship prompt theme
 INSTALL_ZELLIJ_CONFIG=true  # Zellij terminal config
-INSTALL_WARP_CONFIG=true    # Warp terminal configuration and theme mirroring
+INSTALL_WARP_CONFIG=true    # Warp terminal configuration, Carbonfox theme & workflows
+INSTALL_GHOSTTY_CONFIG=true # Ghostty terminal config, Carbonfox theme & GLSL shaders
 
 # ============================================================
 # OPTIONAL: NERD FONT
@@ -65,9 +66,16 @@ INSTALL_NERD_FONT=true
 INSTALL_APPS=true
 
 # ============================================================
+# TINYCAST (Native macOS Launcher & Productivity Utility)
+# ============================================================
+# Set to true to install Tinycast (native, lightweight Raycast alternative)
+# Includes trusted tap (abue-ammar/tinycast) & Gatekeeper quarantine clearing
+INSTALL_TINYCAST=true
+
+# ============================================================
 # RAYCAST & MOLE INTEGRATION
 # ============================================================
-# NOTE: Raycast is installed via Brewfile (cask "raycast")
+# NOTE: Tinycast or Raycast launchers for Mole
 
 # Set to true to install Mole quick launchers for Raycast/Alfred
 # Runs: curl -fsSL https://raw.githubusercontent.com/tw93/Mole/main/scripts/setup-quick-launchers.sh | bash
@@ -82,6 +90,12 @@ INSTALL_OPENCODE=false
 # Set to true to install Oh My OpenCode (multi-agent extension)
 # Runs: npx oh-my-opencode install --no-tui
 INSTALL_OH_MY_OPENCODE=false
+
+# ============================================================
+# AUTOMATION & PROMPTS
+# ============================================================
+# Set to true to skip confirmation prompts automatically without needing the --yes flag
+AUTO_CONFIRM=false
 
 # ============================================================
 # BACKUP MANAGEMENT

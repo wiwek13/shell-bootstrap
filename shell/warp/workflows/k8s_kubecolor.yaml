@@ -1,0 +1,18 @@
+---
+name: Inspect Kubernetes resources with kubecolor
+command: kubecolor get {{resource}} -n {{namespace}} -o wide
+description: List and view Kubernetes resources with syntax-highlighted colorized output
+tags:
+  - kubernetes
+  - k8s
+  - devops
+shells:
+  - zsh
+  - bash
+arguments:
+  - name: resource
+    description: Kubernetes resource type (e.g. pods, svc, ingress, deployments, nodes)
+    default_value: pods
+  - name: namespace
+    description: Kubernetes namespace (or -A for all namespaces)
+    default_value: default

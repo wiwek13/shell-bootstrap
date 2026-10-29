@@ -103,7 +103,7 @@ spacing = "compact"
 
 [appearance.themes]
 system_theme = false
-theme = "fancy_dracula"
+theme = { custom = { name = "Carbonfox", path = "~/.warp/themes/carbonfox.yaml" } }
 
 [appearance.panes]
 should_dim_inactive_panes = true

@@ -1,0 +1,19 @@
+---
+name: Sync dotfiles to shell-bootstrap
+command: '{{bootstrap_path}}/agent/sync_to_project.sh {{mode}}'
+description: Reconcile live configurations from ~/.shell, ~/.warp, and ~/.config/ghostty back to repository
+tags:
+  - dotfiles
+  - warp
+  - ghostty
+  - sync
+shells:
+  - zsh
+  - bash
+arguments:
+  - name: bootstrap_path
+    description: Path to shell-bootstrap repository
+    default_value: ~/shell-bootstrap
+  - name: mode
+    description: Sync flag (--dry-run to preview diffs, or empty to apply)
+    default_value: --dry-run

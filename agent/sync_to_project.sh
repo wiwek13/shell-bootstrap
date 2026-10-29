@@ -123,6 +123,68 @@ if [[ "$SYNC_SHELL" == true ]]; then
         echo -e "${GREEN}  New: shell/warp/settings.toml${NC}"
       fi
     fi
+    for warp_sub in tab_configs themes workflows; do
+      if [[ -d "$WARP_DIR/$warp_sub" ]]; then
+        for f in "$WARP_DIR/$warp_sub"/*; do
+          if [[ -f "$f" ]]; then
+            fname=$(basename "$f")
+            proj_f="$PROJECT_WARP_DIR/$warp_sub/$fname"
+            if [[ -f "$proj_f" ]]; then
+              if ! diff -q "$f" "$proj_f" &>/dev/null; then
+                CHANGES_FOUND=true
+                echo -e "${CYAN}  Modified: shell/warp/$warp_sub/$fname${NC}"
+                if [[ "$DRY_RUN" == true ]]; then
+                  diff -u "$proj_f" "$f" | head -30 || true
+                fi
+              fi
+            else
+              CHANGES_FOUND=true
+              echo -e "${GREEN}  New: shell/warp/$warp_sub/$fname${NC}"
+            fi
+          fi
+        done
+      fi
+    done
+  fi
+
+  # Compare Ghostty config
+  GHOSTTY_DIR="$HOME/.config/ghostty"
+  PROJECT_GHOSTTY_DIR="$PROJECT_SHELL_DIR/ghostty"
+  if [[ -d "$GHOSTTY_DIR" ]]; then
+    if [[ -f "$GHOSTTY_DIR/config" ]]; then
+      if [[ -f "$PROJECT_GHOSTTY_DIR/config" ]]; then
+        if ! diff -q "$GHOSTTY_DIR/config" "$PROJECT_GHOSTTY_DIR/config" &>/dev/null; then
+          CHANGES_FOUND=true
+          echo -e "${CYAN}  Modified: shell/ghostty/config${NC}"
+          if [[ "$DRY_RUN" == true ]]; then
+            diff -u "$PROJECT_GHOSTTY_DIR/config" "$GHOSTTY_DIR/config" | head -30 || true
+          fi
+        fi
+      else
+        CHANGES_FOUND=true
+        echo -e "${GREEN}  New: shell/ghostty/config${NC}"
+      fi
+    fi
+    if [[ -d "$GHOSTTY_DIR/shaders" ]]; then
+      for f in "$GHOSTTY_DIR/shaders"/*; do
+        if [[ -f "$f" ]]; then
+          fname=$(basename "$f")
+          proj_f="$PROJECT_GHOSTTY_DIR/shaders/$fname"
+          if [[ -f "$proj_f" ]]; then
+            if ! diff -q "$f" "$proj_f" &>/dev/null; then
+              CHANGES_FOUND=true
+              echo -e "${CYAN}  Modified: shell/ghostty/shaders/$fname${NC}"
+              if [[ "$DRY_RUN" == true ]]; then
+                diff -u "$proj_f" "$f" | head -30 || true
+              fi
+            fi
+          else
+            CHANGES_FOUND=true
+            echo -e "${GREEN}  New: shell/ghostty/shaders/$fname${NC}"
+          fi
+        fi
+      done
+    fi
   fi
 
   if [[ "$CHANGES_FOUND" == false ]]; then
@@ -144,9 +206,18 @@ if [[ "$SYNC_SHELL" == true ]]; then
 
     # Sync Warp
     if [[ -d "$WARP_DIR" ]]; then
-      mkdir -p "$PROJECT_WARP_DIR/tab_configs"
+      mkdir -p "$PROJECT_WARP_DIR/tab_configs" "$PROJECT_WARP_DIR/themes" "$PROJECT_WARP_DIR/workflows"
       [[ -f "$WARP_DIR/settings.toml" ]] && cp "$WARP_DIR/settings.toml" "$PROJECT_WARP_DIR/settings.toml"
       cp -r "$WARP_DIR/tab_configs"/* "$PROJECT_WARP_DIR/tab_configs/" 2>/dev/null || true
+      cp -r "$WARP_DIR/themes"/* "$PROJECT_WARP_DIR/themes/" 2>/dev/null || true
+      cp -r "$WARP_DIR/workflows"/* "$PROJECT_WARP_DIR/workflows/" 2>/dev/null || true
+    fi
+
+    # Sync Ghostty
+    if [[ -d "$GHOSTTY_DIR" ]]; then
+      mkdir -p "$PROJECT_GHOSTTY_DIR/shaders"
+      [[ -f "$GHOSTTY_DIR/config" ]] && cp "$GHOSTTY_DIR/config" "$PROJECT_GHOSTTY_DIR/config"
+      cp -r "$GHOSTTY_DIR/shaders"/* "$PROJECT_GHOSTTY_DIR/shaders/" 2>/dev/null || true
     fi
     
     echo -e "  ${GREEN}✔ Shell configs synced to project${NC}"

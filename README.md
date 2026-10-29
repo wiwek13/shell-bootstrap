@@ -98,6 +98,7 @@ vim Brewfile
 ### 🖥️ Desktop Apps (via `Brewfile`)
 | App | Description |
 |-----|-------------|
+| Tinycast | 🚀 Fast, native lightweight launcher & clipboard history |
 | Warp | 🤖 AI-powered terminal |
 | OrbStack | 🐳 Docker alternative |
 | Lens | 👁️ Kubernetes IDE |
@@ -115,8 +116,9 @@ INSTALL_ANTIDOTE=true     # 🔌 Plugin manager
 INSTALL_STARSHIP=true     # 🚀 Prompt
 INSTALL_K9S=true          # 🐶 K8s TUI
 
-# Optional
+# Optional & Applications
 INSTALL_NERD_FONT=true    # 🔤 Required for icons
+INSTALL_TINYCAST=true     # 🚀 Native launcher & clipboard history
 INSTALL_APPS=true         # 📦 Install from Brewfile
 ```
 

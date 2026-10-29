@@ -37,7 +37,10 @@ else
   INSTALL_ZSH_CONFIG=true
   INSTALL_STARSHIP_CONFIG=true
   INSTALL_ZELLIJ_CONFIG=true
+  INSTALL_WARP_CONFIG=true
+  INSTALL_GHOSTTY_CONFIG=true
   INSTALL_NERD_FONT=false
+  INSTALL_TINYCAST=true
 fi
 
 # Parse arguments
@@ -57,6 +60,18 @@ for arg in "$@"; do
       ;;
   esac
 done
+
+# Check if auto-confirm is enabled in config or CI environment
+if [[ "${AUTO_CONFIRM:-false}" == true || "${CI:-false}" == "true" || "${CI:-false}" == "1" ]]; then
+  FORCE_YES=true
+fi
+
+# In non-interactive mode or when --yes is supplied, export Homebrew and tool automation flags
+if [[ "$FORCE_YES" == true || ! -t 0 ]]; then
+  export CI=1
+  export NONINTERACTIVE=1
+  export HOMEBREW_NO_INTERACTION=1
+fi
 
 echo "▶ Shell bootstrap starting (macOS only)"
 echo ""
@@ -118,6 +133,7 @@ EXISTING_FILES=()
 [[ -d "$HOME/.shell" ]] && EXISTING_FILES+=("$HOME/.shell/")
 [[ -f "$HOME/.zsh_plugins.txt" ]] && EXISTING_FILES+=("$HOME/.zsh_plugins.txt")
 [[ -d "$HOME/.warp" ]] && EXISTING_FILES+=("$HOME/.warp/")
+[[ -d "$HOME/.config/ghostty" ]] && EXISTING_FILES+=("$HOME/.config/ghostty/")
 
 if [[ ${#EXISTING_FILES[@]} -gt 0 ]]; then
   echo ""
@@ -129,12 +145,17 @@ if [[ ${#EXISTING_FILES[@]} -gt 0 ]]; then
   echo "  Backups will be saved to: $BACKUP_DIR"
   
   if [[ "$FORCE_YES" != true ]]; then
-    echo ""
-    read -p "  Continue? (y/N) " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-      echo "❌ Aborted by user"
-      exit 1
+    if [[ ! -t 0 ]]; then
+      echo ""
+      echo "  Non-interactive session detected, continuing automatically..."
+    else
+      echo ""
+      read -p "  Continue? (y/N) " -n 1 -r
+      echo ""
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "❌ Aborted by user"
+        exit 1
+      fi
     fi
   else
     echo ""
@@ -149,6 +170,7 @@ if [[ ${#EXISTING_FILES[@]} -gt 0 ]]; then
   backup_if_exists "$HOME/.shell"
   backup_if_exists "$HOME/.zsh_plugins.txt"
   backup_if_exists "$HOME/.warp"
+  backup_if_exists "$HOME/.config/ghostty"
   echo "  ✔ Backups saved to: $BACKUP_DIR"
 fi
 
@@ -311,10 +333,23 @@ if [[ "$INSTALL_ZELLIJ_CONFIG" == true ]]; then
 fi
 
 if [[ "${INSTALL_WARP_CONFIG:-true}" == true && -d "$SCRIPT_DIR/shell/warp" ]]; then
-  mkdir -p ~/.warp/tab_configs
+  mkdir -p ~/.warp/tab_configs ~/.warp/themes ~/.warp/workflows
   cp -v "$SCRIPT_DIR/shell/warp/settings.toml" ~/.warp/settings.toml
   cp -v "$SCRIPT_DIR/shell/warp/tab_configs"/* ~/.warp/tab_configs/ 2>/dev/null || true
-  echo "  ✔ Warp configuration copied to ~/.warp/"
+  cp -v "$SCRIPT_DIR/shell/warp/themes"/* ~/.warp/themes/ 2>/dev/null || true
+  cp -v "$SCRIPT_DIR/shell/warp/workflows"/* ~/.warp/workflows/ 2>/dev/null || true
+  echo "  ✔ Warp configuration, Carbonfox theme & workflows copied to ~/.warp/"
+fi
+
+if [[ "${INSTALL_GHOSTTY_CONFIG:-true}" == true && -d "$SCRIPT_DIR/shell/ghostty" ]]; then
+  mkdir -p ~/.config/ghostty/shaders
+  cp -v "$SCRIPT_DIR/shell/ghostty/config" ~/.config/ghostty/config
+  cp -v "$SCRIPT_DIR/shell/ghostty/shaders"/* ~/.config/ghostty/shaders/ 2>/dev/null || true
+  if [[ -x "/Applications/Ghostty.app/Contents/MacOS/ghostty" ]]; then
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "/Applications/Ghostty.app/Contents/MacOS/ghostty" "$HOME/.local/bin/ghostty"
+  fi
+  echo "  ✔ Ghostty configuration, Carbonfox theme & GLSL shaders copied to ~/.config/ghostty/"
 fi
 
 # ============================================================
@@ -383,6 +418,40 @@ EOF
 echo "  ✔ ~/.zshrc"
 
 # ============================================================
+# INSTALL TINYCAST (Native macOS Launcher & Clipboard Manager)
+# ============================================================
+if [[ "${INSTALL_TINYCAST:-true}" == true ]]; then
+  echo ""
+  echo "▶ Setting up Tinycast (native launcher & clipboard history)..."
+
+  # Ensure tap is trusted and tapped
+  echo "  Trusting tap abue-ammar/tinycast..."
+  brew trust --tap abue-ammar/tinycast 2>/dev/null || true
+  brew tap abue-ammar/tinycast 2>/dev/null || true
+
+  # Determine appropriate cask based on architecture
+  TINYCAST_CASK="tinycast"
+  if [[ "$(uname -m)" != "arm64" ]]; then
+    TINYCAST_CASK="tinycast-universal"
+  fi
+
+  # Check if already installed
+  if ! brew list --cask "$TINYCAST_CASK" &>/dev/null && ! brew list --cask tinycast &>/dev/null && ! brew list --cask tinycast-universal &>/dev/null && [[ ! -d "/Applications/Tinycast.app" ]]; then
+    echo "  Installing $TINYCAST_CASK..."
+    brew install --cask "$TINYCAST_CASK" || echo "  ⚠️ Failed to install Tinycast"
+  else
+    echo "  ✔ Tinycast already installed"
+  fi
+
+  # Strip Gatekeeper quarantine attribute if present
+  if [[ -d "/Applications/Tinycast.app" ]]; then
+    xattr -dr com.apple.quarantine "/Applications/Tinycast.app" 2>/dev/null || true
+  fi
+else
+  skip_pkg "tinycast"
+fi
+
+# ============================================================
 # INSTALL APPLICATIONS FROM BREWFILE
 # ============================================================
 APPS_FILE="$SCRIPT_DIR/Brewfile"
@@ -392,9 +461,14 @@ if [[ "${INSTALL_APPS:-true}" == true ]]; then
     echo "▶ Installing applications from Brewfile..."
     
     # Ensure Homebrew bundle is available (it's built-in, but good to check)
-    brew bundle check --file="$APPS_FILE" >/dev/null 2>&1 || {
+    BUNDLE_FLAGS=(--file="$APPS_FILE")
+    if [[ "${BREW_UPGRADE_ALL:-false}" != true ]]; then
+      BUNDLE_FLAGS+=(--no-upgrade)
+    fi
+
+    brew bundle check "${BUNDLE_FLAGS[@]}" >/dev/null 2>&1 || {
       echo "  Running brew bundle..."
-      brew bundle --file="$APPS_FILE" || echo "  ⚠️ Some packages failed to install. Check output above."
+      brew bundle "${BUNDLE_FLAGS[@]}" || echo "  ⚠️ Some packages failed to install. Check output above."
     }
     echo "  ✅ Applications up to date"
   else
@@ -402,8 +476,7 @@ if [[ "${INSTALL_APPS:-true}" == true ]]; then
   fi
 fi
 
-# NOTE: Raycast is installed via Brewfile (cask "raycast")
-# No separate install block needed — Brewfile is the single source of truth
+# NOTE: Tinycast launcher & productivity utility is configured above and mirrored in Brewfile
 
 # ============================================================
 # INSTALL MOLE QUICK LAUNCHERS (if enabled)

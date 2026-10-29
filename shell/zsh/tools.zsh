@@ -108,3 +108,21 @@ fi
 if command -v delta &> /dev/null; then
   export GIT_PAGER="delta"
 fi
+
+# kubecolor - Colorized kubectl with completion alias
+if command -v kubecolor &> /dev/null; then
+  alias kubectl="kubecolor"
+  # Preserve kubectl auto-completion for kubecolor alias
+  compdef kubecolor=kubectl 2>/dev/null || true
+fi
+
+# yazi - Blazing fast terminal file manager with directory jumping
+function y() {
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+  command yazi "$@" --cwd-file="$tmp"
+  if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
+

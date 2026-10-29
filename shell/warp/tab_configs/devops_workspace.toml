@@ -1,0 +1,33 @@
+name = "DevOps Workspace"
+title = "DevOps & Cloud"
+color = "blue"
+
+[[panes]]
+id = "root"
+split = "horizontal"
+children = ["main_terminal", "side_column"]
+
+[[panes]]
+id = "side_column"
+split = "vertical"
+children = ["k8s_monitor", "git_status"]
+
+[[panes]]
+id = "main_terminal"
+type = "terminal"
+directory = "~"
+is_focused = true
+
+[[panes]]
+id = "k8s_monitor"
+type = "terminal"
+directory = "~"
+commands = ["kubecolor get pods -A 2>/dev/null || kubectl get pods -A 2>/dev/null || fastfetch"]
+
+[[panes]]
+id = "git_status"
+type = "terminal"
+directory = "~/shell-bootstrap"
+commands = ["git status"]
+
+[params]

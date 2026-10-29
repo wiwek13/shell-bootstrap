@@ -1,0 +1,83 @@
+# ============================================================
+# Ghostty Terminal Configuration (Carbonfox Theme + GLSL Animation)
+# ============================================================
+
+# Theming & Color Palette
+theme = Carbonfox
+background-opacity = 0.85
+background-blur-radius = 20
+window-colorspace = display-p3
+minimum-contrast = 1.1
+bold-is-bright = true
+
+# Typography & Font Rendering
+font-family = JetBrainsMono Nerd Font
+font-size = 15
+cursor-style = block
+cursor-style-blink = false
+cursor-invert-fg-bg = true
+
+# macOS Native Window Styling
+macos-titlebar-style = hidden
+mouse-hide-while-typing = true
+confirm-close-surface = false
+window-decoration = auto
+window-padding-x = 14
+window-padding-y = 14
+window-padding-balance = false
+
+# Update Channels
+auto-update = check
+auto-update-channel = stable
+
+# Terminal Behavior
+shell-integration-features = no-cursor
+term = xterm-256color
+copy-on-select = clipboard
+
+# Notifications for long-running commands
+notify-on-command-finish = unfocused
+notify-on-command-finish-action = notify
+notify-on-command-finish-after = 10s
+
+# Keybindings: Quick Hotkey Window & UI
+keybind = super+i=inspector:toggle
+keybind = super+enter=text:\n
+keybind = super+grave_accent=toggle_quick_terminal
+
+# Keybindings: Tabs & Windows
+keybind = super+t=new_tab
+keybind = super+w=close_surface
+keybind = super+n=new_window
+
+# Tab Navigation (1-9)
+keybind = super+1=goto_tab:1
+keybind = super+2=goto_tab:2
+keybind = super+3=goto_tab:3
+keybind = super+4=goto_tab:4
+keybind = super+5=goto_tab:5
+keybind = super+6=goto_tab:6
+keybind = super+7=goto_tab:7
+keybind = super+8=goto_tab:8
+keybind = super+9=goto_tab:9
+
+# Keybindings: Split Panes
+keybind = super+d=new_split:right
+keybind = super+shift+d=new_split:down
+keybind = super+shift+e=equalize_splits
+
+# Split Navigation (Vim-style h/j/k/l)
+keybind = super+h=goto_split:left
+keybind = super+j=goto_split:down
+keybind = super+k=goto_split:up
+keybind = super+l=goto_split:right
+
+# Animated Cursor Shader
+custom-shader = shaders/cursor_warp.glsl
+custom-shader-animation = true
+
+# Window Dimensions & State
+window-height = 41
+window-width = 149
+window-save-state = always
+macos-option-as-alt = false

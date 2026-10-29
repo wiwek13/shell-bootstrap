@@ -1,0 +1,19 @@
+---
+name: Run GitHub Actions locally with act
+command: act {{event}} -j {{job_name}}
+description: Run GitHub Actions workflows locally inside Docker containers using act
+tags:
+  - ci-cd
+  - github-actions
+  - docker
+  - devops
+shells:
+  - zsh
+  - bash
+arguments:
+  - name: event
+    description: GitHub event trigger (e.g. push, pull_request, workflow_dispatch)
+    default_value: push
+  - name: job_name
+    description: Specific job name to run
+    default_value: ""
